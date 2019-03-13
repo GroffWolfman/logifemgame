@@ -19,17 +19,10 @@ public Object PlannerCell;
 		
 	}
 
-	//this adds the item textures to the board
+
 	void addToBoard(Texture addingItem){
-		itemsOnBoard.Add(addingItem);
 
-	}
 
-	//take our items on the board and scatter them about
-	void repopulateBoard(){
-		for (int i = 0; i < itemsOnBoard.Length; i++){
-
-		}
 	}
 
 }
