@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PopulateBoardCell : MonoBehaviour {
 
-public Texture[] itemsOnBoard;
+public ArrayList itemsOnBoard = new ArrayList();
 public Object[] usableCells;
 public Object keyCell;
 public Object PlannerCell;
@@ -27,8 +27,9 @@ public Object PlannerCell;
 
 	//take our items on the board and scatter them about
 	void repopulateBoard(){
-		for (int i = 0; i < itemsOnBoard.Length; i++){
-
+		for (int i = 0; i < itemsOnBoard.Count; i++){
+			int randomCell = Mathf.Round(random(usableCells.Length));
+			usableCells[randomCell].Texture = itemsOnBoard.get(i).Texture;
 		}
 	}
 
