@@ -7,6 +7,7 @@ public class CellScript : MonoBehaviour{
 
 public string cellAttribute;
 public bool isClicked;
+public bool isActive;
 
 
         // Start is called before the first frame update
@@ -25,7 +26,7 @@ public bool isClicked;
             }
         }
 
-//Perform function based on what type of cell this currently is
+        //Perform function based on what type of cell this currently is
         void whatDidIClick(){
                 if (this.CellHasTexture("keyTexture")){
                     {print( "keys");}
@@ -40,7 +41,6 @@ public bool isClicked;
         {
             //first off does the cell have a texture/attribute
             if (cellAttribute == null){
-                {print( "YOU HIT NOTHING");}
                 return false;
             } else {
             //now lets actually check it out
@@ -51,5 +51,7 @@ public bool isClicked;
                 }
             }
         }
+
+
     
 }
