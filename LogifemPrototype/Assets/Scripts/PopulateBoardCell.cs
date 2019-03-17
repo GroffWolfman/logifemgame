@@ -17,14 +17,16 @@ public Texture plannerTexture;
 
 	// Use this for initialization
 	void Start () {
-		for (int c = 0; c < usableCells.Length; c++){
-		usableCells[c].GetComponent<MeshRenderer>().material.mainTexture = holderTexture;
-		}
+		wipeBoard();
 		keyCell.GetComponent<MeshRenderer>().material.mainTexture = keyTexture;
+		keyCell.GetComponent<CellScript>().cellAttribute = "keyTexture";
+		PlannerCell.GetComponent<MeshRenderer>().material.mainTexture = plannerTexture;
+		PlannerCell.GetComponent<CellScript>().cellAttribute = "plannerTexture";
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		
 		
 	}
 
@@ -36,17 +38,22 @@ public Texture plannerTexture;
 
 	//take our items on the board and scatter them about
 	void repopulateBoard(){
+
 		for (int i = 0; i < itemsOnBoard.Count; i++){
 			int randomCell = Random.Range(0,usableCells.Length);
 
 			usableCells[randomCell].GetComponent<Material>().mainTexture = itemsOnBoard[i];
 
-			//Material randomCellMat = usableCells[randomCell].GetComponent<Material>();
-			//randomCellMat = itemsOnBoard[i];
-
-			//THIS IS WHAT WE NEED VV BUT HOW TO MAKE IT WORK?
-			//usableCells[randomCell].GetComponent<Material>.material.Texture = itemsOnBoard[i];
 		}
+	}
+
+	//Wiping the Board visually so we can start fresh
+	void wipeBoard(){
+		//go through the cells that aren't Key or Planner and put the holder texture there
+		for (int c = 0; c < usableCells.Length; c++){
+		usableCells[c].GetComponent<MeshRenderer>().material.mainTexture = holderTexture;
+		}
+
 	}
 
 }
