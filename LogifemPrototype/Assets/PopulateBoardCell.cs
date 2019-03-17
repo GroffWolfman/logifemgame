@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class PopulateBoardCell : MonoBehaviour {
 
-public ArrayList itemsOnBoard = new ArrayList();
-public Object[] usableCells;
-public Object keyCell;
-public Object PlannerCell;
+public List<Texture> itemsOnBoard = new List<Texture>();
+public GameObject[] usableCells;
+public GameObject keyCell;
+public GameObject PlannerCell;
 
 	// Use this for initialization
 	void Start () {
@@ -28,8 +28,10 @@ public Object PlannerCell;
 	//take our items on the board and scatter them about
 	void repopulateBoard(){
 		for (int i = 0; i < itemsOnBoard.Count; i++){
-			int randomCell = Mathf.Round(random(usableCells.Length));
-			usableCells[randomCell].Texture = itemsOnBoard.get(i).Texture;
+			int randomCell = Random.Range(0,usableCells.Length);
+			//THIS IS WHAT WE NEED VV BUT HOW TO MAKE IT WORK?
+			//usableCells[randomCell].material.Texture = itemsOnBoard[i].Texture;
+			usableCells[randomCell].MeshRenderer;
 		}
 	}
 
