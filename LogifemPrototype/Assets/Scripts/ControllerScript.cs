@@ -45,6 +45,8 @@ public GameObject cardPrefab;
     }
 
 
+//everything below this line is not being used yet
+
     void ActiveCellManager(){
     PopulateBoardCell board = ourBoard.GetComponent("PopulateBoardCell") as PopulateBoardCell;
 
@@ -60,7 +62,8 @@ public GameObject cardPrefab;
     void cardSelect(){
 
         for (int t = 0; t < trackables.Count; t++){
-            int cardCount = trackables[t].GetComponent<Tracking>().trackableItems.Count;
+            //this line isn't really doing anything so its sitting out now unless we need it
+            //int cardCount = trackables[t].GetComponent<Tracking>().trackableItems.Count;
             for (int tc = 0; tc < trackables[t].GetComponent<Tracking>().trackableItems.Count; tc++){
             GameObject newCard = Instantiate(cardPrefab) as GameObject;
             newCard.GetComponentInChildren<Text>().text = trackables[t].GetComponent<Tracking>().trackableItems[tc]; 
