@@ -22,7 +22,6 @@ public bool isActive;
           
             if (this.isClicked){
                 whatDidIClick();
-                onlyActiveCell();
                 isClicked = false;
             }
         }
@@ -51,16 +50,6 @@ public bool isActive;
                     return false;
                 }
             }
-        }
-
-        void onlyActiveCell(){
-            GameObject mBoard = GameObject.Find("Controller/TempBoard");
-            for(int u =0; u < mBoard.GetComponent<PopulateBoardCell>().usableCells.Length; u++){
-            mBoard.GetComponent<PopulateBoardCell>().usableCells[u].GetComponent<CellScript>().isActive = false;
-            mBoard.GetComponent<PopulateBoardCell>().KeyCell.GetComponent<CellScript>().isActive = false;
-            mBoard.GetComponent<PopulateBoardCell>().PlannerCell.GetComponent<CellScript>().isActive = false;
-            }
-            this.isActive =true;
         }
 
 

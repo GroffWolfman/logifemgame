@@ -6,7 +6,7 @@ public class PopulateBoardCell : MonoBehaviour {
 
 public List<Texture> itemsOnBoard = new List<Texture>();
 public GameObject[] usableCells;
-public GameObject KeyCell;
+public GameObject keyCell;
 public GameObject PlannerCell;
 
 //textures
@@ -18,8 +18,8 @@ public Texture plannerTexture;
 	// Use this for initialization
 	void Start () {
 		wipeBoard();
-		KeyCell.GetComponent<MeshRenderer>().material.mainTexture = keyTexture;
-		KeyCell.GetComponent<CellScript>().cellAttribute = "keyTexture";
+		keyCell.GetComponent<MeshRenderer>().material.mainTexture = keyTexture;
+		keyCell.GetComponent<CellScript>().cellAttribute = "keyTexture";
 		PlannerCell.GetComponent<MeshRenderer>().material.mainTexture = plannerTexture;
 		PlannerCell.GetComponent<CellScript>().cellAttribute = "plannerTexture";
 	}

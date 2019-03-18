@@ -1,22 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ControllerScript : MonoBehaviour
 {
 
-//Objects
 public GameObject ourBoard;
 public GameObject panel;
-public GameObject mCanvas;
-
-//Tracking
-public List<GameObject> trackables = new List<GameObject>();
-public List<GameObject> activeCards = new List<GameObject>();
-public GameObject cardPrefab;
-
-
 
     // Start is called before the first frame update
     void Start()
@@ -39,13 +29,9 @@ public GameObject cardPrefab;
                 cell.isClicked = true;
             }         
         } 
-
-
         
     }
 
-
-//everything below this line is not being used yet
 
     void ActiveCellManager(){
     PopulateBoardCell board = ourBoard.GetComponent("PopulateBoardCell") as PopulateBoardCell;
@@ -58,22 +44,5 @@ public GameObject cardPrefab;
         }
     }
 
-    //Creating a option selector, where you establish the topic followed by the options or array of options
-    void cardSelect(){
-
-        for (int t = 0; t < trackables.Count; t++){
-            //this line isn't really doing anything so its sitting out now unless we need it
-            //int cardCount = trackables[t].GetComponent<Tracking>().trackableItems.Count;
-            for (int tc = 0; tc < trackables[t].GetComponent<Tracking>().trackableItems.Count; tc++){
-            GameObject newCard = Instantiate(cardPrefab) as GameObject;
-            newCard.GetComponentInChildren<Text>().text = trackables[t].GetComponent<Tracking>().trackableItems[tc]; 
-            newCard.transform.SetParent(mCanvas.transform, false);
-
-            activeCards.Add(newCard);         
-            }
-
-        }
-
-    }
 
 }
