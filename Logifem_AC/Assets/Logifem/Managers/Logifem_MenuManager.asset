@@ -50,7 +50,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: 2
-  isEditing: 0
+  isEditing: 1
   title: SaveButton
   slotSize: {x: 16, y: 5}
   sizeType: 1
@@ -76,10 +76,10 @@ MonoBehaviour:
   linkedUiID: 329416
   relativeRect:
     serializedVersion: 2
-    x: 2.1
-    y: 42.3
-    width: 67.2
-    height: 18
+    x: 2.375
+    y: 33.825
+    width: 76
+    height: 13.35
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -196,13 +196,13 @@ MonoBehaviour:
   rectTransformID: 310968
   uiTransitionType: 1
   uiPositionType: 0
-  isEditing: 0
+  isEditing: 1
   isLocked: 0
   id: 12
   title: Pause
-  manualSize: {x: 16.999998, y: 28.5}
+  manualSize: {x: 17, y: 30.337078}
   positionType: 0
-  manualPosition: {x: 210, y: 180}
+  manualPosition: {x: 237.5, y: 133.5}
   positionSmoothing: 0
   alignment: 4
   toggleKey: Menu
@@ -280,13 +280,13 @@ MonoBehaviour:
   speechProximityLimit: 0
   speechProximityDistance: 10
   deleteUIWhenTurnOff: 0
-  biggestElementSize: {x: 69.299995, y: 100.5}
+  biggestElementSize: {x: 78.375, y: 78.625}
   rect:
     serializedVersion: 2
-    x: 174.3
-    y: 128.7
-    width: 71.399994
-    height: 102.6
+    x: 197.125
+    y: 93
+    width: 80.75
+    height: 81
   showInFilter: 1
 --- !u!114 &114078297665459168
 MonoBehaviour:
@@ -2253,9 +2253,9 @@ MonoBehaviour:
   isLocked: 0
   id: 4
   title: InGame
-  manualSize: {x: 7.3, y: 5.966667}
+  manualSize: {x: 7.300001, y: 6.5798917}
   positionType: 1
-  manualPosition: {x: 15.33, y: 349.25998}
+  manualPosition: {x: 23.907503, y: 355.893}
   positionSmoothing: 0
   alignment: 6
   toggleKey: 
@@ -2324,13 +2324,13 @@ MonoBehaviour:
   speechProximityLimit: 0
   speechProximityDistance: 10
   deleteUIWhenTurnOff: 0
-  biggestElementSize: {x: 28.56, y: 19.380001}
+  biggestElementSize: {x: 44.540005, y: 20.939001}
   rect:
     serializedVersion: 2
     x: 0
-    y: 338.52
-    width: 30.66
-    height: 21.480001
+    y: 343.786
+    width: 47.815006
+    height: 24.214
   showInFilter: 1
 --- !u!114 &114443783839414234
 MonoBehaviour:
@@ -2713,10 +2713,10 @@ MonoBehaviour:
   linkedUiID: 326570
   relativeRect:
     serializedVersion: 2
-    x: 2.1
-    y: 22.2
-    width: 67.2
-    height: 18
+    x: 2.375
+    y: 18.1
+    width: 76
+    height: 13.35
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -2923,10 +2923,10 @@ MonoBehaviour:
   linkedUiID: 332646
   relativeRect:
     serializedVersion: 2
-    x: 2.1
-    y: 62.399998
-    width: 67.2
-    height: 18
+    x: 2.375
+    y: 49.550003
+    width: 76
+    height: 13.35
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -3602,10 +3602,10 @@ MonoBehaviour:
   linkedUiID: 13963684
   relativeRect:
     serializedVersion: 2
-    x: 2.1
-    y: 2.1
-    width: 26.46
-    height: 17.28
+    x: 3.275
+    y: 3.275
+    width: 41.265003
+    height: 17.664001
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -3905,10 +3905,10 @@ MonoBehaviour:
   linkedUiID: 335904
   relativeRect:
     serializedVersion: 2
-    x: 2.1
-    y: 82.5
-    width: 67.2
-    height: 18
+    x: 2.375
+    y: 65.275
+    width: 76
+    height: 13.35
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -4397,7 +4397,7 @@ MonoBehaviour:
   rectTransformID: 1765320
   uiTransitionType: 1
   uiPositionType: 0
-  isEditing: 1
+  isEditing: 0
   isLocked: 0
   id: 3
   title: Inventory
@@ -4707,8 +4707,8 @@ MonoBehaviour:
     serializedVersion: 2
     x: 4.845
     y: 133.225
-    width: 67.2
-    height: 18
+    width: 76
+    height: 13.35
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -5300,10 +5300,10 @@ MonoBehaviour:
   linkedUiID: 318248
   relativeRect:
     serializedVersion: 2
-    x: 2.1
-    y: 2.1
-    width: 67.2
-    height: 18
+    x: 2.375
+    y: 2.375
+    width: 76
+    height: 13.35
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
