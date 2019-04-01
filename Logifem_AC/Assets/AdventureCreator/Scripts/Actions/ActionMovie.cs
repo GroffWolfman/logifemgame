@@ -38,6 +38,7 @@ namespace AC
 
 		#if UNITY_5_6_OR_NEWER && !UNITY_SWITCH
 		public VideoPlayer videoPlayer;
+		private VideoPlayer runtimeVideoPlayer;
 		public int videoPlayerParameterID = -1;
 		public int videoPlayerConstantID;
 		public bool prepareOnly = false;
@@ -88,7 +89,7 @@ namespace AC
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
 			#if UNITY_5_6_OR_NEWER && !UNITY_SWITCH
-			videoPlayer = AssignFile <VideoPlayer> (parameters, videoPlayerParameterID, videoPlayerConstantID, videoPlayer);
+			runtimeVideoPlayer = AssignFile <VideoPlayer> (parameters, videoPlayerParameterID, videoPlayerConstantID, videoPlayer);
 			isPaused = false;
 
 				#if UNITY_WEBGL
@@ -111,7 +112,7 @@ namespace AC
 			if (movieClipType == MovieClipType.VideoPlayer)
 			{
 				#if UNITY_5_6_OR_NEWER && !UNITY_SWITCH
-				if (videoPlayer != null)
+				if (runtimeVideoPlayer != null)
 				{
 					if (!isRunning)
 					{
@@ -122,18 +123,18 @@ namespace AC
 							#if UNITY_WEBGL
 							if (!string.IsNullOrEmpty (movieURL))
 							{
-								videoPlayer.url = movieURL;
+								runtimeVideoPlayer.url = movieURL;
 							}
 							#else
 							if (newClip != null)
 							{
-								videoPlayer.clip = newClip;
+								runtimeVideoPlayer.clip = newClip;
 							}
 							#endif
 
 							if (prepareOnly)
 							{
-								videoPlayer.Prepare ();
+								runtimeVideoPlayer.Prepare ();
 
 								if (willWait)
 								{
@@ -143,11 +144,11 @@ namespace AC
 							else
 							{
 								KickStarter.playerInput.skipMovieKey = "";
-								videoPlayer.Play ();
+								runtimeVideoPlayer.Play ();
 
-								if (videoPlayer.isLooping)
+								if (runtimeVideoPlayer.isLooping)
 								{
-									ACDebug.LogWarning ("Cannot wait for " + videoPlayer.name + " to finish because it is looping!", videoPlayer);
+									ACDebug.LogWarning ("Cannot wait for " + runtimeVideoPlayer.name + " to finish because it is looping!", runtimeVideoPlayer);
 									return 0f;
 								}
 
@@ -164,11 +165,11 @@ namespace AC
 						}
 						else if (movieMaterialMethod == MovieMaterialMethod.PauseMovie)
 						{
-							videoPlayer.Pause ();
+							runtimeVideoPlayer.Pause ();
 						}
 						else if (movieMaterialMethod == MovieMaterialMethod.StopMovie)
 						{
-							videoPlayer.Stop ();
+							runtimeVideoPlayer.Stop ();
 						}
 
 						return 0f;
@@ -177,7 +178,7 @@ namespace AC
 					{
 						if (prepareOnly)
 						{
-							if (!videoPlayer.isPrepared)
+							if (!runtimeVideoPlayer.isPrepared)
 							{
 								return defaultPauseTime;
 							}
@@ -188,37 +189,37 @@ namespace AC
 							{
 								if (KickStarter.stateHandler.gameState == GameState.Paused)
 								{
-									if (videoPlayer.isPlaying && !isPaused)
+									if (runtimeVideoPlayer.isPlaying && !isPaused)
 									{
-										videoPlayer.Pause ();
+										runtimeVideoPlayer.Pause ();
 										isPaused = true;
 									}
 									return defaultPauseTime;
 								}
 								else
 								{
-									if (!videoPlayer.isPlaying && isPaused)
+									if (!runtimeVideoPlayer.isPlaying && isPaused)
 									{
 										isPaused = false;
-										videoPlayer.Play ();
+										runtimeVideoPlayer.Play ();
 									}
 								}
 							}
 
 							if (canSkip && skipKey != "" && KickStarter.playerInput.skipMovieKey == "")
 							{
-								videoPlayer.Stop ();
+								runtimeVideoPlayer.Stop ();
 								isRunning = false;
 								return 0f;
 							}
 
-							if (!videoPlayer.isPrepared || videoPlayer.isPlaying)
+							if (!runtimeVideoPlayer.isPrepared || runtimeVideoPlayer.isPlaying)
 							{
 								return defaultPauseTime;
 							}
 						}
 
-						videoPlayer.Stop ();
+						runtimeVideoPlayer.Stop ();
 						isRunning = false;
 						return 0f;
 					}
@@ -376,15 +377,15 @@ namespace AC
 			if (movieClipType == MovieClipType.VideoPlayer)
 			{
 				#if UNITY_5_6_OR_NEWER && !UNITY_SWITCH
-				if (videoPlayer != null)
+				if (runtimeVideoPlayer != null)
 				{
 					if (prepareOnly)
 					{
-						videoPlayer.Prepare ();
+						runtimeVideoPlayer.Prepare ();
 					}
 					else
 					{
-						videoPlayer.Stop ();
+						runtimeVideoPlayer.Stop ();
 					}
 				}
 				#endif

@@ -251,7 +251,8 @@ namespace AC
 
 			if (newBaseObject.GetComponent <AudioSource>() == null)
 			{
-				newBaseObject.AddComponent <AudioSource>();
+				AudioSource baseAudioSource = newBaseObject.AddComponent <AudioSource>();
+				baseAudioSource.playOnAwake = false;
 			}
 
 			if (newBaseObject.GetComponent <Paths>() == null)
@@ -353,7 +354,8 @@ namespace AC
 			GameObject soundChild = new GameObject ("Sound child");
 			soundChild.transform.parent = newBaseObject.transform;
 			soundChild.transform.localPosition = Vector3.zero;
-			soundChild.AddComponent <AudioSource>();
+			AudioSource childAudioSource = soundChild.AddComponent <AudioSource>();
+			childAudioSource.playOnAwake = false;
 			Sound sound = soundChild.AddComponent <Sound>();
 			charScript.soundChild = sound;
 

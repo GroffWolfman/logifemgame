@@ -26,6 +26,7 @@ namespace AC
 		public int parameterID = -1;
 		public int constantID = 0;
 		public Hotspot hotspot;
+		private Hotspot runtimeHotspot;
 		
 		public InteractionType interactionType;
 		public int number = 0;
@@ -42,41 +43,41 @@ namespace AC
 		
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			hotspot = AssignFile <Hotspot> (parameters, parameterID, constantID, hotspot);
+			runtimeHotspot = AssignFile <Hotspot> (parameters, parameterID, constantID, hotspot);
 		}
 		
 		
 		override public bool CheckCondition ()
 		{
-			if (hotspot == null)
+			if (runtimeHotspot == null)
 			{
 				return false;
 			}
 			
 			if (interactionType == InteractionType.Use)
 			{
-				if (hotspot.useButtons.Count > number)
+				if (runtimeHotspot.useButtons.Count > number)
 				{
-					return !hotspot.useButtons [number].isDisabled;
+					return !runtimeHotspot.useButtons [number].isDisabled;
 				}
 				else
 				{
-					ACDebug.LogWarning ("Cannot check Hotspot " + hotspot.gameObject.name + "'s Use button " + number.ToString () + " because it doesn't exist!", hotspot);
+					ACDebug.LogWarning ("Cannot check Hotspot " + runtimeHotspot.gameObject.name + "'s Use button " + number.ToString () + " because it doesn't exist!", runtimeHotspot);
 				}
 			}
 			else if (interactionType == InteractionType.Examine)
 			{
-				return !hotspot.lookButton.isDisabled;
+				return !runtimeHotspot.lookButton.isDisabled;
 			}
 			else if (interactionType == InteractionType.Inventory)
 			{
-				if (hotspot.invButtons.Count > number)
+				if (runtimeHotspot.invButtons.Count > number)
 				{
-					return !hotspot.invButtons [number].isDisabled;
+					return !runtimeHotspot.invButtons [number].isDisabled;
 				}
 				else
 				{
-					ACDebug.LogWarning ("Cannot check Hotspot " + hotspot.gameObject.name + "'s Inventory button " + number.ToString () + " because it doesn't exist!", hotspot);
+					ACDebug.LogWarning ("Cannot check Hotspot " + runtimeHotspot.gameObject.name + "'s Inventory button " + number.ToString () + " because it doesn't exist!", runtimeHotspot);
 				}
 			}
 			

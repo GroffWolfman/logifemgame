@@ -25,6 +25,7 @@ namespace AC
 		public int parameterID = -1;
 		public int constantID = 0;
 		public Hotspot hotspot;
+		private Hotspot runtimeHotspot;
 		public bool affectChildren = false;
 
 		public ChangeType changeType = ChangeType.Enable;
@@ -41,25 +42,25 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			hotspot = AssignFile <Hotspot> (parameters, parameterID, constantID, hotspot);
+			runtimeHotspot = AssignFile <Hotspot> (parameters, parameterID, constantID, hotspot);
 		}
 
 		
 		override public float Run ()
 		{
-			if (hotspot == null)
+			if (runtimeHotspot == null)
 			{
 				return 0f;
 			}
 
-			DoChange (hotspot);
+			DoChange (runtimeHotspot);
 
 			if (affectChildren)
 			{
-				Hotspot[] hotspots = hotspot.GetComponentsInChildren <Hotspot>();
+				Hotspot[] hotspots = runtimeHotspot.GetComponentsInChildren <Hotspot>();
 				foreach (Hotspot _hotspot in hotspots)
 				{
-					if (_hotspot != hotspot)
+					if (_hotspot != runtimeHotspot)
 					{
 						DoChange (_hotspot);
 					}

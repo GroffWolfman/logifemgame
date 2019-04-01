@@ -235,7 +235,7 @@ namespace AC
 
 			displayDuration = Mathf.Max (displayDuration, 0.1f);
 			log.fullText = _message;
-			KickStarter.eventManager.Call_OnStartSpeech (_speaker, log.fullText, lineID);
+			KickStarter.eventManager.Call_OnStartSpeech (this, _speaker, log.fullText, lineID);
 
 			if (!CanScroll ())
 			{
@@ -256,7 +256,7 @@ namespace AC
 			else
 			{
 				displayText = string.Empty;
-				KickStarter.eventManager.Call_OnStartSpeechScroll (_speaker, log.fullText, lineID);
+				KickStarter.eventManager.Call_OnStartSpeechScroll (this, _speaker, log.fullText, lineID);
 			}
 
 			isAlive = true;
@@ -296,6 +296,19 @@ namespace AC
 				_message = DetermineRichTextTags (_message, KickStarter.dialog.richTextTags);
 			}
 
+			displayText = _message;
+		}
+
+
+		public Speech (AC.Char _speaker, string _message)
+		{
+			if (Application.isPlaying)
+			{
+				_message = DetermineGaps (_message);
+				_message = DetermineRichTextTags (_message, KickStarter.dialog.richTextTags);
+			}
+
+			speaker = _speaker;
 			displayText = _message;
 		}
 
@@ -520,7 +533,7 @@ namespace AC
 
 			if (CanScroll ())
 			{
-				KickStarter.eventManager.Call_OnStartSpeechScroll (speaker, log.fullText, log.lineID);
+				KickStarter.eventManager.Call_OnStartSpeechScroll (this, speaker, log.fullText, log.lineID);
 			}
 		}
 
@@ -815,8 +828,8 @@ namespace AC
 			}
 
 			// Call events
-			KickStarter.eventManager.Call_OnEndSpeechScroll (speaker, log.fullText, log.lineID);
-			KickStarter.eventManager.Call_OnCompleteSpeechScroll (speaker, log.fullText, log.lineID);
+			KickStarter.eventManager.Call_OnEndSpeechScroll (this, speaker, log.fullText, log.lineID);
+			KickStarter.eventManager.Call_OnCompleteSpeechScroll (this, speaker, log.fullText, log.lineID);
 		}
 
 
@@ -855,7 +868,7 @@ namespace AC
 			if (pauseEndTime > 0f || pauseIsIndefinite)
 			{
 				// Call event
-				KickStarter.eventManager.Call_OnEndSpeechScroll (speaker, log.fullText, log.lineID);
+				KickStarter.eventManager.Call_OnEndSpeechScroll (this, speaker, log.fullText, log.lineID);
 			}
 		}
 

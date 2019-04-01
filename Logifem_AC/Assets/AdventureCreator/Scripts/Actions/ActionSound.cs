@@ -52,9 +52,8 @@ namespace AC
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
 			audioClip = (AudioClip) AssignObject <AudioClip> (parameters, audioClipParameterID, audioClip);
-			soundObject = AssignFile <Sound> (parameters, parameterID, constantID, soundObject);
 
-			runtimeSound = soundObject;
+			runtimeSound = AssignFile <Sound> (parameters, parameterID, constantID, soundObject);
 			if (runtimeSound == null && audioClip != null)
 			{
 				runtimeSound = KickStarter.sceneSettings.defaultSound;

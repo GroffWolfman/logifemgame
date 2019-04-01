@@ -36,7 +36,7 @@ namespace AC
 		/** If True, then the engine is sprite-based, and character's will rely on their spriteChild for animation */
 		public bool isSpriteBased = false;
 		/** If True, then the TurnHead method will be called every frame regardless of whether or not the head is looking at something */
-		public bool updateHeadAlways = false;
+		public bool updateHeadAlways { get; protected set; } 
 
 		protected AC.Char character;
 
@@ -64,6 +64,9 @@ namespace AC
 			action.method = (ActionCharAnim.AnimMethodChar) EditorGUILayout.EnumPopup ("Method:", action.method);
 			#endif
 		}
+
+		public virtual void ActionCharAnimAssignValues (ActionCharAnim action, List<ActionParameter> parameters)
+		{}
 
 		public virtual float ActionCharAnimRun (ActionCharAnim action)
 		{

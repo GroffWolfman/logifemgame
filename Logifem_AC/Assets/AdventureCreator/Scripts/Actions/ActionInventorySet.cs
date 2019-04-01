@@ -335,11 +335,19 @@ namespace AC
 
 		public override int GetInventoryReferences (List<ActionParameter> parameters, int _invID)
 		{
-			if (invID == _invID)
+			int numFound = 0;
+
+			if (parameterID < 0 && invID == _invID)
 			{
-				return 1;
+				numFound ++;
 			}
-			return 0;
+
+			if (invAction == InvAction.Replace && replaceParameterID < 0 && invIDReplace == _invID)
+			{
+				numFound ++;
+			}
+
+			return numFound;
 		}
 
 		#endif

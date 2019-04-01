@@ -26,6 +26,7 @@ namespace AC
 		public int constantID = 0;
 		public int parameterID = -1;
 		public GameCameraThirdPerson linkedCamera;
+		private GameCameraThirdPerson runtimeLinkedCamera;
 		
 		public float transitionTime;
 		public int transitionTimeParameterID = -1;
@@ -53,7 +54,7 @@ namespace AC
 		
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			linkedCamera = AssignFile <GameCameraThirdPerson> (parameters, parameterID, constantID, linkedCamera);
+			runtimeLinkedCamera = AssignFile <GameCameraThirdPerson> (parameters, parameterID, constantID, linkedCamera);
 			transitionTime = AssignFloat (parameters, transitionTimeParameterID, transitionTime);
 		}
 		
@@ -87,7 +88,7 @@ namespace AC
 
 		private bool DoRotation (float _transitionTime)
 		{
-			if (linkedCamera != null && (controlPitch || controlSpin))
+			if (runtimeLinkedCamera != null && (controlPitch || controlSpin))
 			{
 				float _newPitchAngle = newPitchAngle;
 				float _newSpinAngle = newSpinAngle;
@@ -96,7 +97,7 @@ namespace AC
 				{
 					if (isRelativeToTarget)
 					{
-						_newSpinAngle += linkedCamera.target.localEulerAngles.y;
+						_newSpinAngle += runtimeLinkedCamera.target.localEulerAngles.y;
 					}
 					else
 					{
@@ -111,11 +112,11 @@ namespace AC
 
 				if (_transitionTime > 0f)
 				{
-					linkedCamera.ForceRotation (controlPitch, _newPitchAngle, controlSpin, _newSpinAngle, _transitionTime, moveMethod, timeCurve);
+					runtimeLinkedCamera.ForceRotation (controlPitch, _newPitchAngle, controlSpin, _newSpinAngle, _transitionTime, moveMethod, timeCurve);
 				}
 				else
 				{
-					linkedCamera.ForceRotation (controlPitch, _newPitchAngle, controlSpin, _newSpinAngle);
+					runtimeLinkedCamera.ForceRotation (controlPitch, _newPitchAngle, controlSpin, _newSpinAngle);
 				}
 
 				return true;

@@ -726,13 +726,17 @@ namespace AC
 
 			if (manualSet)
 			{
-				if (!isOn)
+				if (!isOn && KickStarter.eventManager != null)
 				{
 					KickStarter.eventManager.Call_OnTurnHotspot (this, true);
 				}
 
 				isOn = true;
-				LimitToCamera (KickStarter.mainCamera.attachedCamera);
+
+				if (KickStarter.mainCamera != null)
+				{
+					LimitToCamera (KickStarter.mainCamera.attachedCamera);
+				}
 			}
 		}
 
@@ -756,7 +760,7 @@ namespace AC
 
 			if (manualSet)
 			{
-				if (isOn)
+				if (isOn && KickStarter.eventManager != null)
 				{
 					KickStarter.eventManager.Call_OnTurnHotspot (this, false);
 				}
@@ -962,24 +966,11 @@ namespace AC
 			
 			if (_collider != null)
 			{
-				if (_collider is BoxCollider)
-				{
-					BoxCollider boxCollider = (BoxCollider) _collider;
-					worldPoint += boxCollider.center;
-				}
-				else if (_collider is CapsuleCollider)
-				{
-					CapsuleCollider capsuleCollider = (CapsuleCollider) _collider;
-					worldPoint += capsuleCollider.center;
-				}
+				worldPoint = _collider.bounds.center;
 			}
 			else if (_collider2D != null)
 			{
-				if (_collider2D is BoxCollider2D)
-				{
-					BoxCollider2D boxCollider = (BoxCollider2D) _collider2D;
-					worldPoint += UnityVersionHandler.Get2DHotspotOffset (boxCollider, transform);
-				}
+				worldPoint = _collider2D.bounds.center;
 			}
 
 			if (inLocalSpace)

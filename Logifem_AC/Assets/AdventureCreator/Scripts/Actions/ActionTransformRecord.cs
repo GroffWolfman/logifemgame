@@ -26,6 +26,7 @@ namespace AC
 		public GameObject obToRead;
 		public int obToReadParameterID = -1;
 		public int obToReadConstantID = 0;
+		private GameObject runtimeObToRead;
 
 		public TransformRecordType transformRecordType = TransformRecordType.Position;
 		public enum TransformRecordType { Position, Rotation, Scale };
@@ -46,13 +47,13 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			obToRead = AssignFile (parameters, obToReadParameterID, obToReadConstantID, obToRead);
+			runtimeObToRead = AssignFile (parameters, obToReadParameterID, obToReadConstantID, obToRead);
 		}
 
 
 		override public float Run ()	
 		{
-			if (obToRead != null)
+			if (runtimeObToRead != null)
 			{
 				GVar variable = null;
 				if (variableLocation == VariableLocation.Global)
@@ -71,33 +72,33 @@ namespace AC
 						case TransformRecordType.Position:
 						if (transformLocation == VariableLocation.Global)
 						{
-							variable.SetVector3Value (obToRead.transform.position);
+							variable.SetVector3Value (runtimeObToRead.transform.position);
 						}
 						else if (transformLocation == VariableLocation.Local)
 						{
-							variable.SetVector3Value (obToRead.transform.localPosition);
+							variable.SetVector3Value (runtimeObToRead.transform.localPosition);
 						}
 						break;
 
 						case TransformRecordType.Rotation:
 						if (transformLocation == VariableLocation.Global)
 						{
-							variable.SetVector3Value (obToRead.transform.eulerAngles);
+							variable.SetVector3Value (runtimeObToRead.transform.eulerAngles);
 						}
 						else if (transformLocation == VariableLocation.Local)
 						{
-							variable.SetVector3Value (obToRead.transform.localEulerAngles);
+							variable.SetVector3Value (runtimeObToRead.transform.localEulerAngles);
 						}
 						break;
 
 						case TransformRecordType.Scale:
 						if (transformLocation == VariableLocation.Global)
 						{
-							variable.SetVector3Value (obToRead.transform.lossyScale);
+							variable.SetVector3Value (runtimeObToRead.transform.lossyScale);
 						}
 						else if (transformLocation == VariableLocation.Local)
 						{
-							variable.SetVector3Value (obToRead.transform.localScale);
+							variable.SetVector3Value (runtimeObToRead.transform.localScale);
 						}
 						break;
 					}

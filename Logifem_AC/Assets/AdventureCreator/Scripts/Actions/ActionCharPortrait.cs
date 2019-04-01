@@ -28,6 +28,7 @@ namespace AC
 		public int constantID = 0;
 		public bool isPlayer;
 		public Char _char;
+		private Char runtimeChar;
 		public Texture newPortraitGraphic;
 
 
@@ -42,22 +43,22 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			_char = AssignFile <Char> (parameters, parameterID, constantID, _char);
+			runtimeChar = AssignFile <Char> (parameters, parameterID, constantID, _char);
 
 			if (isPlayer)
 			{
-				_char = KickStarter.player;
+				runtimeChar = KickStarter.player;
 			}
 		}
 
 		
 		override public float Run ()
 		{
-			if (_char)
+			if (runtimeChar)
 			{
-				_char.portraitIcon.texture = newPortraitGraphic;
-				_char.portraitIcon.ClearSprites ();
-				_char.portraitIcon.ClearCache ();
+				runtimeChar.portraitIcon.texture = newPortraitGraphic;
+				runtimeChar.portraitIcon.ClearSprites ();
+				runtimeChar.portraitIcon.ClearCache ();
 			}
 			
 			return 0f;

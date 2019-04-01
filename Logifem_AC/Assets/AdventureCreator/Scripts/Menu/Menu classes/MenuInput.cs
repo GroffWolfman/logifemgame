@@ -163,6 +163,10 @@ namespace AC
 				}
 				characterLimit = CustomGUILayout.IntField ("Character limit:", characterLimit, apiPrefix + ".characterLimit", "The character limit on text that can be entered");
 
+				#if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_2018_3_OR_NEWER
+				EditorGUILayout.HelpBox ("For the character limit to be obeyed on Android and iOS, Unity 2018.3 or later must be used.", MessageType.Info);
+				#endif
+
 				linkedButton = CustomGUILayout.TextField ("'Enter' key's linked Button:", linkedButton, apiPrefix + ".linkedPrefab", "The name of the MenuButton element that is synced with the 'Return' key when this element is active");
 				requireSelection = CustomGUILayout.ToggleLeft ("Require selection to accept input?", requireSelection, apiPrefix + ".requireSelection", "If True, then the element will need to be selected before it receives input");
 			}

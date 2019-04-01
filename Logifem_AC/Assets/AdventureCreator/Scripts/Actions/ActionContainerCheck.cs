@@ -32,6 +32,7 @@ namespace AC
 		public int parameterID = -1;
 		public int constantID = 0;
 		public Container container;
+		private Container runtimeContainer;
 
 		public bool doCount;
 		public int intValue = 1;
@@ -54,24 +55,24 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			container = AssignFile <Container> (parameters, parameterID, constantID, container);
+			runtimeContainer = AssignFile <Container> (parameters, parameterID, constantID, container);
 			invID = AssignInvItemID (parameters, invParameterID, invID);
 
 			if (useActive)
 			{
-				container = KickStarter.playerInput.activeContainer;
+				runtimeContainer = KickStarter.playerInput.activeContainer;
 			}
 		}
 
 		
 		override public bool CheckCondition ()
 		{
-			if (container == null)
+			if (runtimeContainer == null)
 			{
 				return false;
 			}
 
-			int count = container.GetCount (invID);
+			int count = runtimeContainer.GetCount (invID);
 			
 			if (doCount)
 			{

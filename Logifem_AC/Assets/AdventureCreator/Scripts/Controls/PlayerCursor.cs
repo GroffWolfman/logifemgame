@@ -578,7 +578,7 @@ namespace AC
 			{
 				return;
 			}
-			
+
 			if (hotspot.HasContextUse ())
 			{
 				if (!hotspot.HasContextLook ())

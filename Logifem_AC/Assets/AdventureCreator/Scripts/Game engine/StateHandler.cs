@@ -53,6 +53,7 @@ namespace AC
 		private List<Parallax2D> parallax2Ds = new List<Parallax2D>();
 		private List<Hotspot> hotspots = new List<Hotspot>();
 		private List<Highlight> highlights = new List<Highlight>();
+		private List<AC_Trigger> triggers = new List<AC_Trigger>();
 		private List<_Camera> cameras = new List<_Camera>();
 		private List<Sound> sounds = new List<Sound>();
 		private List<LimitVisibility> limitVisibilitys = new List<LimitVisibility>();
@@ -87,6 +88,8 @@ namespace AC
 
 		private void InitPersistentEngine ()
 		{
+			KickStarter.localVariables.OnStart ();
+
 			KickStarter.runtimeLanguages.OnAwake ();
 			KickStarter.sceneChanger.OnAwake ();
 			KickStarter.levelStorage.OnAwake ();
@@ -321,6 +324,14 @@ namespace AC
 					{
 						hotspots[_i].SetProximity (setProximity);
 					}
+				}
+			}
+
+			if (!triggerIsOff)
+			{
+				for (_i=0; _i<triggers.Count; _i++)
+				{
+					triggers[_i]._Update ();
 				}
 			}
 
@@ -1151,6 +1162,32 @@ namespace AC
 			if (highlights.Contains (_object))
 			{
 				highlights.Remove (_object);
+			}
+		}
+
+
+		/**
+		 * <summary>Registers a AC_Trigger, so that it can be updated</summary>
+		 * <param name = "_object">The AC_Trigger to register</param>
+		 */
+		public void Register (AC_Trigger _object)
+		{
+			if (!triggers.Contains (_object))
+			{
+				triggers.Add (_object);
+			}
+		}
+
+
+		/**
+		 * <summary>Unregisters a AC_Trigger, so that it is no longer updated</summary>
+		 * <param name = "_object">The AC_Trigger to unregister</param>
+		 */
+		public void Unregister (AC_Trigger _object)
+		{
+			if (triggers.Contains (_object))
+			{
+				triggers.Remove (_object);
 			}
 		}
 

@@ -37,7 +37,7 @@ MonoBehaviour:
   forceSubtitles: 1
   translateAudio: 0
   fallbackAudio: 0
-  keepTextInBuffer: 1
+  keepTextInBuffer: 0
   relegateBackgroundSpeechAudio: 0
   usePlayerRealName: 0
   separateSharedPlayerAudio: 0
@@ -1717,7 +1717,7 @@ MonoBehaviour:
   speechIDRecycling: 0
   sceneFiles:
   - Assets/AdventureCreator/Demo/Scenes/Basement.unity
-  activeLineID: 54
+  activeLineID: 11
   mergeMatchingSpeechIDs: 0
   useSpeechTags: 0
   speechTags: []

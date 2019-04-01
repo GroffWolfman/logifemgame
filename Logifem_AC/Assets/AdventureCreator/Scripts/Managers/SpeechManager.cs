@@ -368,6 +368,12 @@ namespace AC
 			if (showLipSyncing)
 			{
 				lipSyncMode = (LipSyncMode) CustomGUILayout.EnumPopup ("Lip syncing:", lipSyncMode, "AC.KickStarter.speechManager.lipSyncMode", "The game's lip-syncing method");
+
+				if (autoNameSpeechFiles && lipSyncMode != LipSyncMode.Off && lipSyncMode != LipSyncMode.FaceFX)
+				{
+					autoLipsyncFolder = CustomGUILayout.TextField ("Lipsync data directory:", autoLipsyncFolder, "AC.KickStarter.speechManager.autoLipsyncFolder", "The subdirectory within Resources that lipsync files are pulled from");
+				}
+
 				if (lipSyncMode == LipSyncMode.FromSpeechText || lipSyncMode == LipSyncMode.ReadPamelaFile || lipSyncMode == LipSyncMode.ReadSapiFile || lipSyncMode == LipSyncMode.ReadPapagayoFile)
 				{
 					lipSyncOutput = (LipSyncOutput) CustomGUILayout.EnumPopup ("Perform lipsync on:", lipSyncOutput, "AC.KickStarter.speechManager.lipSyncOutput", "What lip-syncing actually affects");
@@ -400,11 +406,6 @@ namespace AC
 				else if (lipSyncMode == LipSyncMode.RogoLipSync && !RogoLipSyncIntegration.IsDefinePresent ())
 				{
 					EditorGUILayout.HelpBox ("The 'RogoLipSyncIsPresent' preprocessor define must be declared in the Player Settings.", MessageType.Warning);
-				}
-
-				if (autoNameSpeechFiles && lipSyncMode != LipSyncMode.Off && lipSyncMode != LipSyncMode.FaceFX)
-				{
-					autoLipsyncFolder = CustomGUILayout.TextField ("Lipsync data directory:", autoLipsyncFolder, "AC.KickStarter.speechManager.autoLipsyncFolder", "The subdirectory within Resources that lipsync files are pulled from");
 				}
 			}
 			EditorGUILayout.EndVertical ();
@@ -547,12 +548,12 @@ namespace AC
 			{
 				if (line.textType == typeFilter && line.Matches (textFilter, filterSpeechLine))
 				{
-					string scenePlusExtension = (line.scene != "") ? (line.scene + ".unity") : "";
+					string scenePlusExtension = (!string.IsNullOrEmpty (line.scene)) ? (line.scene + ".unity") : string.Empty;
 					
-					if ((line.scene == "" && sceneFilter == 0)
+					if ((string.IsNullOrEmpty (line.scene) && sceneFilter == 0)
 						|| sceneFilter == 1
-						|| (line.scene != "" && !string.IsNullOrEmpty (selectedScene) && sceneFilter > 1 && line.scene.EndsWith (selectedScene))
-						|| (line.scene != "" && !string.IsNullOrEmpty (selectedScene) && sceneFilter > 1 && scenePlusExtension.EndsWith (selectedScene)))
+						|| (!string.IsNullOrEmpty (line.scene) && !string.IsNullOrEmpty (selectedScene) && sceneFilter > 1 && line.scene.EndsWith (selectedScene))
+						|| (!string.IsNullOrEmpty (line.scene) && !string.IsNullOrEmpty (selectedScene) && sceneFilter > 1 && scenePlusExtension.EndsWith (selectedScene)))
 					{
 						if (tagFilter <= 0
 						|| ((tagFilter-1) < speechTags.Count && line.tagID == speechTags[tagFilter-1].ID))
@@ -682,10 +683,18 @@ namespace AC
 				displayedLine.Value.ShowGUI ();
 			}
 
-			if (displayedLinesDictionary.Count == 0 && lines.Count > 0)
+			if (lines.Count > 0)
 			{
-				EditorGUILayout.HelpBox ("No lines that match the above filters have been gathered.", MessageType.Info);
+				if (displayedLinesDictionary.Count == 0)
+				{
+					EditorGUILayout.HelpBox ("No lines that match the above filters have been gathered.", MessageType.Info);
+				}
+				else
+				{
+					EditorGUILayout.HelpBox ("Filtering " + displayedLinesDictionary.Count + " out of " + lines.Count + " lines.", MessageType.Info);
+				}
 			}
+
 
 			doCache = GUI.changed;
 
@@ -1146,7 +1155,7 @@ namespace AC
 
 		private void LocateDialogueLine (SpeechLine speechLine)
 		{
-			if (speechLine.scene != "")
+			if (speechLine.scene != string.Empty)
 			{
 				// In a scene
 
@@ -1165,13 +1174,16 @@ namespace AC
 							{
 								foreach (Action action in list.actions)
 								{
-									if (action != null && action is ActionSpeech)
+									if (action != null)
 									{
-										ActionSpeech actionSpeech = (ActionSpeech) action;
-										if (actionSpeech.lineID == speechLine.lineID)
+										if (action is ActionSpeech)
 										{
-											EditorGUIUtility.PingObject (list);
-											return;
+											ActionSpeech actionSpeech = (ActionSpeech) action;
+											if (actionSpeech.lineID == speechLine.lineID)
+											{
+												EditorGUIUtility.PingObject (list);
+												return;
+											}
 										}
 									}
 								}
@@ -1191,20 +1203,87 @@ namespace AC
 				{
 					foreach (Action action in actionListAsset.actions)
 					{
-						if (action != null && action is ActionSpeech)
+						if (action != null)
 						{
-							ActionSpeech actionSpeech = (ActionSpeech) action;
-							if (actionSpeech.lineID == speechLine.lineID)
+							if (action is ActionSpeech)
 							{
-								EditorGUIUtility.PingObject (actionListAsset);
+								ActionSpeech actionSpeech = (ActionSpeech) action;
+								if (actionSpeech.lineID == speechLine.lineID)
+								{
+									EditorGUIUtility.PingObject (actionListAsset);
+									return;
+								}
+							}
+
+							#if CAN_USE_TIMELINE
+							if (action is ActionTimeline)
+							{
+								ActionTimeline actionTimeline = (ActionTimeline) action;
+								if (actionTimeline.director != null)
+								{
+									if (LocateLineInTimeline (actionTimeline.director, speechLine.lineID))
+									{
+										return;
+									}
+								}
+							}
+							#endif
+						}
+					}
+				}
+
+				#if CAN_USE_TIMELINE
+				// Still can't find, so need to search scenes - Timeline speech tracks have no scene
+				if (UnityVersionHandler.SaveSceneIfUserWants ())
+				{
+					sceneFiles = AdvGame.GetSceneFiles ();
+
+					foreach (string sceneFile in sceneFiles)
+					{
+						UnityVersionHandler.OpenScene (sceneFile);
+
+						ActionList[] actionLists = GameObject.FindObjectsOfType (typeof (ActionList)) as ActionList[];
+						foreach (ActionList list in actionLists)
+						{
+							if (list.source == ActionListSource.InScene)
+							{
+								foreach (Action action in list.actions)
+								{
+									if (action != null)
+									{
+										if (action is ActionTimeline)
+										{
+											ActionTimeline actionTimeline = (ActionTimeline) action;
+											if (actionTimeline.director != null)
+											{
+												if (LocateLineInTimeline (actionTimeline.director, speechLine.lineID))
+												{
+													return;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+
+						PlayableDirector[] directors = GameObject.FindObjectsOfType (typeof (PlayableDirector)) as PlayableDirector[];
+						foreach (PlayableDirector director in directors)
+						{
+							if (LocateLineInTimeline (director, speechLine.lineID))
+							{
 								return;
 							}
 						}
 					}
 				}
+				#endif
 
-				ACDebug.Log ("Could not find line " + speechLine.lineID + " - is ActionList asset still present?");
+				ACDebug.Log ("Could not find line " + speechLine.lineID + " - is the asset it's a part of still present?");
 			}
+
+
+		
 		}
 
 
@@ -1396,40 +1475,6 @@ namespace AC
 			}
 		}
 
-
-		#if CAN_USE_TIMELINE
-
-		private void GetLinesFromTimelines (bool onlySeekNew)
-		{
-			foreach (TimelineAsset timelineAsset in allTimelineAssets)
-			{
-				IEnumerable<TrackAsset> trackAssets = timelineAsset.GetOutputTracks ();
-				foreach (TrackAsset trackAsset in trackAssets)
-				{
-					if (trackAsset is ITranslatable)
-					{
-						ExtractTranslatable (trackAsset as ITranslatable, onlySeekNew, false, false);
-					}
-				}
-			}
-		}
-
-
-		private void SmartAddAsset (TimelineAsset asset)
-		{
-			if (asset != null)
-			{
-				if (allTimelineAssets.Contains (asset))
-				{
-					return;
-				}
-
-				allTimelineAssets.Add (asset);
-			}
-		}
-
-		#endif
-		
 		
 		private void ExtractTranslatable (ITranslatable translatable, bool onlySeekNew, bool isInScene, bool isMonoBehaviour, string comment = "", int tagID = -1, string actionListName = "")
 		{
@@ -1940,6 +1985,14 @@ namespace AC
 				}
 			}
 
+			#if CAN_USE_TIMELINE
+			PlayableDirector[] directors = FindObjectsOfType<PlayableDirector>();
+			for (int i=0; i<directors.Length; i++)
+			{
+				ClearTimeline (directors[i]);
+			}
+			#endif
+
 			// Save the scene
 			UnityVersionHandler.SaveScene ();
 			EditorUtility.SetDirty (this);
@@ -1985,6 +2038,14 @@ namespace AC
 				{
 					ClearTranslatable (action as ITranslatable, isInScene, false);
 				}
+
+				#if CAN_USE_TIMELINE
+				if (action is ActionTimeline)
+				{
+					ActionTimeline actionTimeline = (ActionTimeline) action;
+					ClearTimeline (actionTimeline.director);
+				}
+				#endif
 			}
 		}
 
@@ -2334,7 +2395,123 @@ namespace AC
 			}
 		}
 
+		
 		#if CAN_USE_TIMELINE
+
+		private void SetOrderIDs (TimelineAsset timelineAsset)
+		{
+			string prefix = timelineAsset.name + "_" + timelineAsset.GetHashCode () + "_";
+
+			IEnumerable<TrackAsset> trackAssets = timelineAsset.GetOutputTracks ();
+
+			foreach (TrackAsset trackAsset in trackAssets)
+			{
+				if (trackAsset is ITranslatable)
+				{
+					IEnumerable<TimelineClip> timelineClips = trackAsset.GetClips ();
+					ITranslatable translatable = trackAsset as ITranslatable;
+
+					int i = 0;
+					foreach (TimelineClip timelineClip in timelineClips)
+					{
+						SpeechLine speechLine = GetLine (translatable.GetTranslationID (i));
+						if (speechLine != null)
+						{
+							speechLine.orderID = (int) (timelineClip.start * 10);
+							speechLine.orderPrefix = prefix;
+						}
+
+						i++;
+					}
+				}
+			}
+		}
+
+		private void GetLinesFromTimelines (bool onlySeekNew)
+		{
+			foreach (TimelineAsset timelineAsset in allTimelineAssets)
+			{
+				IEnumerable<TrackAsset> trackAssets = timelineAsset.GetOutputTracks ();
+				foreach (TrackAsset trackAsset in trackAssets)
+				{
+					if (trackAsset is ITranslatable)
+					{
+						ExtractTranslatable (trackAsset as ITranslatable, onlySeekNew, false, false, "", -1, timelineAsset.name);
+					}
+				}
+
+				if (onlySeekNew)
+				{
+					SetOrderIDs (timelineAsset);
+				}
+			}
+		}
+
+
+		private bool LocateLineInTimeline (PlayableDirector director, int lineID)
+		{
+			if (director.playableAsset != null && director.playableAsset is TimelineAsset)
+			{
+				TimelineAsset timelineAsset = director.playableAsset as TimelineAsset;
+				IEnumerable<TrackAsset> trackAssets = timelineAsset.GetOutputTracks ();
+
+				foreach (TrackAsset trackAsset in trackAssets)
+				{
+					if (trackAsset is ITranslatable)
+					{
+						ITranslatable translatable = trackAsset as ITranslatable;
+
+						int[] newIDs = new int[translatable.GetNumTranslatables ()];
+						for (int i=0; i<newIDs.Length; i++)
+						{
+							if (translatable.CanTranslate (i) && translatable.GetTranslationID (i) == lineID)
+							{
+								EditorGUIUtility.PingObject (timelineAsset);
+								return true;
+							}
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+
+
+		private void SmartAddAsset (TimelineAsset asset)
+		{
+			if (asset != null)
+			{
+				if (allTimelineAssets.Contains (asset))
+				{
+					return;
+				}
+
+				allTimelineAssets.Add (asset);
+			}
+		}
+
+
+		private void ClearTimeline (PlayableDirector director)
+		{
+			if (director != null)
+			{
+				if (director.playableAsset != null && director.playableAsset is TimelineAsset)
+				{
+					TimelineAsset timelineAsset = director.playableAsset as TimelineAsset;
+					IEnumerable<TrackAsset> trackAssets = timelineAsset.GetOutputTracks ();
+
+					foreach (TrackAsset trackAsset in trackAssets)
+					{
+						if (trackAsset is ITranslatable)
+						{
+							ClearTranslatable (trackAsset as ITranslatable, false, false);
+						}
+					}
+				}
+			}
+		}
+
 
 		private void CollectAllTimelineAssets ()
 		{
@@ -2735,7 +2912,6 @@ namespace AC
 
 					if (_action is ActionSpeech)
 					{
-
 						ActionSpeech actionSpeech = (ActionSpeech) _action;
 						SpeechLine speechLine = GetLine (actionSpeech.lineID);
 						if (speechLine != null)
@@ -3190,7 +3366,8 @@ namespace AC
 		 */
 		public bool UseFileBasedLipSyncing ()
 		{
-			if (lipSyncMode == LipSyncMode.ReadPamelaFile || lipSyncMode == LipSyncMode.ReadPapagayoFile || lipSyncMode == LipSyncMode.ReadSapiFile || lipSyncMode == LipSyncMode.RogoLipSync) {
+			if (lipSyncMode == LipSyncMode.ReadPamelaFile || lipSyncMode == LipSyncMode.ReadPapagayoFile || lipSyncMode == LipSyncMode.ReadSapiFile || lipSyncMode == LipSyncMode.RogoLipSync)
+			{
 				return true;
 			}
 			return false;

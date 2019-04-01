@@ -25,6 +25,7 @@ namespace AC
 		public GameObject objectToCheck;
 		public int objectToCheckConstantID;
 		public int objectToCheckParameterID = -1;
+		private GameObject runtimeObjectToCheck;
 
 		public string tagsToCheck;
 		public int tagsToCheckParameterID = -1;
@@ -41,14 +42,14 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			objectToCheck = AssignFile (parameters, objectToCheckParameterID, objectToCheckConstantID, objectToCheck);
+			runtimeObjectToCheck = AssignFile (parameters, objectToCheckParameterID, objectToCheckConstantID, objectToCheck);
 			tagsToCheck = AssignString (parameters, tagsToCheckParameterID, tagsToCheck);
 		}
 
 
 		public override bool CheckCondition ()
 		{
-			if (objectToCheck != null && !string.IsNullOrEmpty (tagsToCheck))
+			if (runtimeObjectToCheck != null && !string.IsNullOrEmpty (tagsToCheck))
 			{
 				if (!tagsToCheck.StartsWith (";"))
 				{
@@ -59,7 +60,7 @@ namespace AC
 					tagsToCheck += ";";
 				}
 
-				string objectTag = objectToCheck.tag;
+				string objectTag = runtimeObjectToCheck.tag;
 				return (tagsToCheck.Contains (";" + objectTag + ";"));
 			}
 

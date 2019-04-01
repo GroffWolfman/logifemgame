@@ -26,6 +26,8 @@ namespace AC
 		public int parameterID = -1;
 		public int constantID = 0;
 		public GameObject obToAffect;
+		private GameObject runtimeObToAffect;
+
 		public bool affectChildren;
 		public VisState visState = 0;
 		
@@ -41,7 +43,7 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			obToAffect = AssignFile (parameters, parameterID, constantID, obToAffect);
+			runtimeObToAffect = AssignFile (parameters, parameterID, constantID, obToAffect);
 		}
 		
 		
@@ -55,18 +57,18 @@ namespace AC
 			
 			if (obToAffect)
 			{
-				if (obToAffect.GetComponent <LimitVisibility>())
+				if (runtimeObToAffect.GetComponent <LimitVisibility>())
 				{
-					obToAffect.GetComponent <LimitVisibility>().isLockedOff = !state;
+					runtimeObToAffect.GetComponent <LimitVisibility>().isLockedOff = !state;
 				}
-				else if (obToAffect.GetComponent <Renderer>())
+				else if (runtimeObToAffect.GetComponent <Renderer>())
 				{
-					obToAffect.GetComponent <Renderer>().enabled = state;
+					runtimeObToAffect.GetComponent <Renderer>().enabled = state;
 				}
 
 				if (affectChildren)
 				{
-					foreach (Renderer _renderer in obToAffect.GetComponentsInChildren <Renderer>())
+					foreach (Renderer _renderer in runtimeObToAffect.GetComponentsInChildren <Renderer>())
 					{
 						_renderer.enabled = state;
 					}

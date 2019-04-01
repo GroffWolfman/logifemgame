@@ -87,7 +87,7 @@ namespace AC
 				{
 					if (charState == CharState.Move)
 					{
-						charState = CharState.Decelerate;
+						StartDecelerating ();
 					}
 					else if (charState == CharState.Custom)
 					{

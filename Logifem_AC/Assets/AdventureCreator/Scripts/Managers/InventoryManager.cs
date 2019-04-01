@@ -773,6 +773,9 @@ namespace AC
 				menu.AddItem (new GUIContent ("Re-arrange/Move to bottom"), false, DocumentCallback, "Move to bottom");
 			}
 
+			menu.AddSeparator ("");
+			menu.AddItem (new GUIContent ("Find references"), false, DocumentCallback, "Find references");
+
 			if (Application.isPlaying)
 			{
 				menu.AddSeparator ("");
@@ -795,7 +798,7 @@ namespace AC
 			if (sideDocument >= 0)
 			{
 				Document tempDocument = documents[sideDocument];
-				
+
 				switch (obj.ToString ())
 				{
 					case "Insert after":
@@ -834,6 +837,10 @@ namespace AC
 						Undo.RecordObject (this, "Move Document to bottom");
 						documents.Add (tempDocument);
 						documents.RemoveAt (sideDocument);
+						break;
+
+					case "Find references":
+						FindReferences (tempDocument);
 						break;
 
 					case "Give to Player":
@@ -1000,6 +1007,7 @@ namespace AC
 					}
 
 					EditorGUILayout.EndScrollView ();
+					EditorGUILayout.HelpBox ("Filtering " + numInFilter + " out of " + items.Count + " items.", MessageType.Info);
 				}
 				else if (items.Count > 0)
 				{
@@ -1978,6 +1986,66 @@ namespace AC
 					}
 
 					EditorUtility.DisplayDialog ("Inventory search complete", "In total, found " + totalNumReferences + " references to inventory item '" + item.label + "' in the project.  Please see the Console window for full details.", "OK");
+				}
+			}
+		}
+
+
+		private void FindReferences (Document document)
+		{
+			if (document == null) return;
+
+			if (EditorUtility.DisplayDialog ("Search '" + document.Title + "' references?", "The Editor will search assets, and active scenes listed in the Build Settings, for references to the document.  The current scene will need to be saved and listed to be included in the search process. Continue?", "OK", "Cancel"))
+			{
+				if (UnityVersionHandler.SaveSceneIfUserWants ())
+				{
+					int totalNumReferences = 0;
+					int thisNumReferences = 0;
+
+					// Search scenes
+					string originalScene = UnityVersionHandler.GetCurrentSceneFilepath ();
+					string[] sceneFiles = AdvGame.GetSceneFiles ();
+
+					foreach (string sceneFile in sceneFiles)
+					{
+						UnityVersionHandler.OpenScene (sceneFile);
+
+						ActionList[] actionLists = FindObjectsOfType <ActionList>();
+						foreach (ActionList actionList in actionLists)
+						{
+							foreach (Action action in actionList.actions)
+							{
+								thisNumReferences = action.GetDocumentReferences (actionList.parameters, document.ID);
+								if (thisNumReferences > 0)
+								{
+									totalNumReferences += thisNumReferences;
+									ACDebug.Log ("Found " + thisNumReferences + " references to document '" + document.title + "' in Action #" + actionList.actions.IndexOf (action) + " of ActionList '" + actionList + "' in scene '" + sceneFile + "'", actionList);
+								}
+							}
+						}
+					}
+
+					UnityVersionHandler.OpenScene (originalScene);
+
+					// Search assets
+					if (AdvGame.GetReferences ().speechManager != null)
+					{
+						ActionListAsset[] allActionListAssets = AdvGame.GetReferences ().speechManager.GetAllActionListAssets ();
+						foreach (ActionListAsset actionListAsset in allActionListAssets)
+						{
+							foreach (Action action in actionListAsset.actions)
+							{
+								thisNumReferences = action.GetDocumentReferences (actionListAsset.parameters, document.ID);
+								if (thisNumReferences > 0)
+								{
+									totalNumReferences += thisNumReferences;
+									ACDebug.Log ("Found " + thisNumReferences + " references to inventory item '" + document.Title + "' in Action #" + actionListAsset.actions.IndexOf (action) + " of ActionList asset '" + actionListAsset.name + "'", actionListAsset);
+								}
+							}
+						}
+					}
+
+					EditorUtility.DisplayDialog ("Document search complete", "In total, found " + totalNumReferences + " references to document '" + document.Title + "' in the project.  Please see the Console window for full details.", "OK");
 				}
 			}
 		}

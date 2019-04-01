@@ -29,6 +29,7 @@ namespace AC
 
 		public bool isPlayer;
 		public Char animChar;
+		private Char runtimeAnimChar;
 		public AnimationClip clip;
 		public string clip2D;
 		public int clip2DParameterID = -1;
@@ -63,8 +64,10 @@ namespace AC
 		public string parameterName;
 		public int parameterNameID = -1;
 		public float parameterValue;
+		public int parameterValueParameterID = -1;
 
 		public bool hideHead = false;
+		public bool doLoop; // Ignored by official animation engines
 
 		
 		public ActionCharAnim ()
@@ -78,29 +81,34 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			animChar = AssignFile <Char> (parameters, parameterID, constantID, animChar);
+			runtimeAnimChar = AssignFile <Char> (parameters, parameterID, constantID, animChar);
 			newSound = (AudioClip) AssignObject <AudioClip> (parameters, newSoundParameterID, newSound);
 			parameterName = AssignString (parameters, parameterNameID, parameterName);
 			clip2D = AssignString (parameters, clip2DParameterID, clip2D);
 
 			if (isPlayer)
 			{
-				animChar = KickStarter.player;
+				runtimeAnimChar = KickStarter.player;
+			}
+
+			if (runtimeAnimChar != null && runtimeAnimChar.GetAnimEngine () != null)
+			{
+				runtimeAnimChar.GetAnimEngine ().ActionCharAnimAssignValues (this, parameters);
 			}
 		}
 
 		
 		override public float Run ()
 		{
-			if (animChar != null)
+			if (runtimeAnimChar != null)
 			{
-				if (animChar.GetAnimEngine () != null)
+				if (runtimeAnimChar.GetAnimEngine () != null)
 				{
-					return animChar.GetAnimEngine ().ActionCharAnimRun (this);
+					return runtimeAnimChar.GetAnimEngine ().ActionCharAnimRun (this);
 				}
 				else
 				{
-					ACDebug.LogWarning ("Could not create animation engine for " + animChar.name, animChar);
+					ACDebug.LogWarning ("Could not create animation engine for " + runtimeAnimChar.name, runtimeAnimChar);
 				}
 			}
 			else
@@ -114,11 +122,11 @@ namespace AC
 
 		override public void Skip ()
 		{
-			if (animChar)
+			if (runtimeAnimChar != null)
 			{
-				if (animChar.GetAnimEngine () != null)
+				if (runtimeAnimChar.GetAnimEngine () != null)
 				{
-					animChar.GetAnimEngine ().ActionCharAnimSkip (this);
+					runtimeAnimChar.GetAnimEngine ().ActionCharAnimSkip (this);
 				}
 			}
 		}
@@ -238,6 +246,15 @@ namespace AC
 
 		
 		#endif
+
+
+		public Char RuntimeAnimChar
+		{
+			get
+			{
+				return runtimeAnimChar;
+			}
+		}
 
 	}
 

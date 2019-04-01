@@ -98,7 +98,7 @@ namespace AC
 			{
 				if (doGroundedCheck && character != null)
 				{
-					if (!character.IsGrounded ())
+					if (!character.IsGrounded (true))
 					{
 						return;
 					}

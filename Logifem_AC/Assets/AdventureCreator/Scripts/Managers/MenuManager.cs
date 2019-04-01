@@ -305,6 +305,7 @@ namespace AC
 					}
 
 					EditorGUILayout.EndScrollView ();
+					EditorGUILayout.HelpBox ("Filtering " + numInFilter + " out of " + menus.Count + " menus.", MessageType.Info);
 				}
 				else if (menus.Count > 0)
 				{

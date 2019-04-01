@@ -28,6 +28,7 @@ namespace AC
 
 		public int constantID;
 		public Conversation linkedConversation;
+		private Conversation runtimeLinkedConversation;
 		
 		
 		public ActionDialogOptionRename ()
@@ -41,15 +42,15 @@ namespace AC
 
 		override public void AssignValues ()
 		{
-			linkedConversation = AssignFile <Conversation> (constantID, linkedConversation);
+			runtimeLinkedConversation = AssignFile <Conversation> (constantID, linkedConversation);
 		}
 
 		
 		override public float Run ()
 		{
-			if (linkedConversation)
+			if (runtimeLinkedConversation != null)
 			{
-				linkedConversation.RenameOption (optionID, newLabel, lineID);
+				runtimeLinkedConversation.RenameOption (optionID, newLabel, lineID);
 			}
 			
 			return 0f;

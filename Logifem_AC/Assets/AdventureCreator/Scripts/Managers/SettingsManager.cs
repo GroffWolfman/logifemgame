@@ -1068,13 +1068,18 @@ namespace AC
 					EditorGUILayout.HelpBox ("The current scene overrides the camera perspective - some fields only apply to the global perspective, below.", MessageType.Info);
 				}
 
-				cameraPerspective_int = (int) cameraPerspective;
-				cameraPerspective_int = CustomGUILayout.Popup ("Camera perspective:", cameraPerspective_int, cameraPerspective_list, "AC.KickStarter.settingsManager.cameraPerspective", "The game's default camera perspective, unless overridden in the scene");
-				cameraPerspective = (CameraPerspective) cameraPerspective_int;
 				if (movementMethod == MovementMethod.FirstPerson)
 				{
 					cameraPerspective = CameraPerspective.ThreeD;
+					cameraPerspective_int = (int) cameraPerspective;
 				}
+				else
+				{
+					cameraPerspective_int = (int) cameraPerspective;
+					cameraPerspective_int = CustomGUILayout.Popup ("Camera perspective:", cameraPerspective_int, cameraPerspective_list, "AC.KickStarter.settingsManager.cameraPerspective", "The game's default camera perspective, unless overridden in the scene");
+					cameraPerspective = (CameraPerspective) cameraPerspective_int;
+				}
+
 				if (cameraPerspective == CameraPerspective.TwoD)
 				{
 					movingTurning = (MovingTurning) CustomGUILayout.EnumPopup ("Moving and turning:", movingTurning, "AC.KickStarter.settingsManager.movingTurning", "The method of moving and turning in 2D games");
@@ -1380,11 +1385,8 @@ namespace AC
 				result = SmartAddInput (result, "CursorVertical (Axis)");
 			}
 
-			if (movementMethod != MovementMethod.PointAndClick && movementMethod != MovementMethod.StraightToCursor)
-			{
-				result = SmartAddInput (result, "ToggleCursor (Button)");
-			}
-			
+			result = SmartAddInput (result, "ToggleCursor (Button)");
+
 			if (movementMethod == MovementMethod.Direct || movementMethod == MovementMethod.FirstPerson || inputMethod == InputMethod.KeyboardOrController)
 			{
 				if (inputMethod != InputMethod.TouchScreen)
@@ -1631,6 +1633,30 @@ namespace AC
 				if (_player.ID == ID)
 				{
 					return _player.playerOb;
+				}
+			}
+			
+			return null;
+		}
+
+
+		/**
+		 * <summary>Gets a PlayerPrefab class with a given ID number, if player-switching is allowed.</summary>
+		 * <param name = "ID">The ID number of the PlayerPrefab class to return</param>
+		 * <returns>The PlayerPrefab class with the given ID number. This will return null if playerSwitching = PlayerSwitching.DoNotAllow</returns>
+		 */
+		public PlayerPrefab GetPlayerPrefab (int ID)
+		{
+			if (playerSwitching == PlayerSwitching.DoNotAllow)
+			{
+				return null;
+			}
+			
+			foreach (PlayerPrefab _player in players)
+			{
+				if (_player.ID == ID)
+				{
+					return _player;
 				}
 			}
 			

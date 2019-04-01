@@ -35,6 +35,7 @@ namespace AC
 		public int constantID = 0;
 		public int parameterID = -1;
 		public Container container;
+		private Container runtimeContainer;
 
 		public bool setAmount = false;
 		public int amountParameterID = -1;
@@ -57,20 +58,23 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			container = AssignFile <Container> (parameters, parameterID, constantID, container);
 			invID = AssignInvItemID (parameters, invParameterID, invID);
 			amount = AssignInteger (parameters, amountParameterID, amount);
 
 			if (useActive)
 			{
-				container = KickStarter.playerInput.activeContainer;
+				runtimeContainer = KickStarter.playerInput.activeContainer;
+			}
+			else
+			{
+				runtimeContainer = AssignFile <Container> (parameters, parameterID, constantID, container);
 			}
 		}
 
 		
 		override public float Run ()
 		{
-			if (container == null)
+			if (runtimeContainer == null)
 			{
 				return 0f;
 			}
@@ -82,7 +86,7 @@ namespace AC
 
 			if (containerAction == ContainerAction.Add)
 			{
-				container.Add (invID, amount);
+				runtimeContainer.Add (invID, amount);
 			}
 			else if (containerAction == ContainerAction.Remove)
 			{
@@ -91,15 +95,15 @@ namespace AC
 					KickStarter.runtimeInventory.Add (invID, amount, false, -1);
 				}
 
-				container.Remove (invID, amount);
+				runtimeContainer.Remove (invID, amount);
 			}
 			else if (containerAction == ContainerAction.RemoveAll)
 			{
 				if (transferToPlayer)
 				{
-					for (int i=0; i<container.items.Count; i++)
+					for (int i=0; i<runtimeContainer.items.Count; i++)
 					{
-						ContainerItem containerItem = container.items[i];
+						ContainerItem containerItem = runtimeContainer.items[i];
 
 						// Prevent if player is already carrying one, and multiple can't be carried
 						InvItem invItem = KickStarter.inventoryManager.GetItem (containerItem.linkedID);
@@ -115,7 +119,7 @@ namespace AC
 				}
 				else
 				{
-					container.RemoveAll ();
+					runtimeContainer.RemoveAll ();
 				}
 			}
 

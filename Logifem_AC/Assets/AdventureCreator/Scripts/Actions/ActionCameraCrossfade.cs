@@ -26,6 +26,7 @@ namespace AC
 		public int parameterID = -1;
 		public int constantID = 0;
 		public _Camera linkedCamera;
+		private _Camera runtimeLinkedCamera;
 
 		public float transitionTime;
 		public int transitionTimeParameterID = -1;
@@ -44,7 +45,7 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			linkedCamera = AssignFile <_Camera> (parameters, parameterID, constantID, linkedCamera);
+			runtimeLinkedCamera = AssignFile <_Camera> (parameters, parameterID, constantID, linkedCamera);
 			transitionTime = AssignFloat (parameters, transitionTimeParameterID, transitionTime);
 
 			if (returnToLast)
@@ -61,21 +62,21 @@ namespace AC
 				isRunning = true;
 				MainCamera mainCam = KickStarter.mainCamera;
 
-				if (linkedCamera != null && mainCam.attachedCamera != linkedCamera)
+				if (runtimeLinkedCamera != null && mainCam.attachedCamera != runtimeLinkedCamera)
 				{
-					if (linkedCamera is GameCameraThirdPerson)
+					if (runtimeLinkedCamera is GameCameraThirdPerson)
 					{
-						GameCameraThirdPerson tpCam = (GameCameraThirdPerson) linkedCamera;
+						GameCameraThirdPerson tpCam = (GameCameraThirdPerson) runtimeLinkedCamera;
 						tpCam.ResetRotation ();
 					}
-					else if (linkedCamera is GameCameraAnimated)
+					else if (runtimeLinkedCamera is GameCameraAnimated)
 					{
-						GameCameraAnimated animCam = (GameCameraAnimated) linkedCamera;
+						GameCameraAnimated animCam = (GameCameraAnimated) runtimeLinkedCamera;
 						animCam.PlayClip ();
 					}
 					
-					linkedCamera.MoveCameraInstant ();
-					mainCam.Crossfade (transitionTime, linkedCamera);
+					runtimeLinkedCamera.MoveCameraInstant ();
+					mainCam.Crossfade (transitionTime, runtimeLinkedCamera);
 						
 					if (transitionTime > 0f && willWait)
 					{
@@ -96,21 +97,21 @@ namespace AC
 		{
 			MainCamera mainCam = KickStarter.mainCamera;
 
-			if (linkedCamera != null && mainCam.attachedCamera != linkedCamera)
+			if (runtimeLinkedCamera != null && mainCam.attachedCamera != runtimeLinkedCamera)
 			{
-				if (linkedCamera is GameCameraThirdPerson)
+				if (runtimeLinkedCamera is GameCameraThirdPerson)
 				{
-					GameCameraThirdPerson tpCam = (GameCameraThirdPerson) linkedCamera;
+					GameCameraThirdPerson tpCam = (GameCameraThirdPerson) runtimeLinkedCamera;
 					tpCam.ResetRotation ();
 				}
-				else if (linkedCamera is GameCameraAnimated)
+				else if (runtimeLinkedCamera is GameCameraAnimated)
 				{
-					GameCameraAnimated animCam = (GameCameraAnimated) linkedCamera;
+					GameCameraAnimated animCam = (GameCameraAnimated) runtimeLinkedCamera;
 					animCam.PlayClip ();
 				}
 				
-				linkedCamera.MoveCameraInstant ();
-				mainCam.SetGameCamera (linkedCamera);
+				runtimeLinkedCamera.MoveCameraInstant ();
+				mainCam.SetGameCamera (runtimeLinkedCamera);
 			}
 		}
 

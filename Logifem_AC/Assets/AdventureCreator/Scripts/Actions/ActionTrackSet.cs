@@ -28,6 +28,7 @@ namespace AC
 		public Moveable_Drag dragObject;
 		public int dragParameterID = -1;
 		public int dragConstantID = 0;
+		private Moveable_Drag runtimeDragObject;
 
 		public float positionAlong;
 		public int positionParameterID = -1;
@@ -51,7 +52,7 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			dragObject = AssignFile <Moveable_Drag> (parameters, dragParameterID, dragConstantID, dragObject);
+			runtimeDragObject = AssignFile <Moveable_Drag> (parameters, dragParameterID, dragConstantID, dragObject);
 
 			positionAlong = AssignFloat (parameters, positionParameterID, positionAlong);
 			positionAlong = Mathf.Max (0f, positionAlong);
@@ -61,7 +62,7 @@ namespace AC
 		
 		override public float Run ()
 		{
-			if (dragObject == null)
+			if (runtimeDragObject == null)
 			{
 				isRunning = false;
 				return 0f;
@@ -73,17 +74,17 @@ namespace AC
 
 				if (isInstant)
 				{
-					dragObject.AutoMoveAlongTrack (positionAlong, 0f, removePlayerControl);
+					runtimeDragObject.AutoMoveAlongTrack (positionAlong, 0f, removePlayerControl);
 				}
 				else
 				{
 					if (stopOnCollide)
 					{
-						dragObject.AutoMoveAlongTrack (positionAlong, speed, removePlayerControl, layerMask);
+						runtimeDragObject.AutoMoveAlongTrack (positionAlong, speed, removePlayerControl, layerMask);
 					}
 					else
 					{
-						dragObject.AutoMoveAlongTrack (positionAlong, speed, removePlayerControl);
+						runtimeDragObject.AutoMoveAlongTrack (positionAlong, speed, removePlayerControl);
 					}
 				}
 
@@ -96,7 +97,7 @@ namespace AC
 			}
 			else
 			{
-				if (dragObject.IsAutoMoving ())
+				if (runtimeDragObject.IsAutoMoving ())
 				{
 					return defaultPauseTime;
 				}
@@ -108,12 +109,12 @@ namespace AC
 
 		override public void Skip ()
 		{
-			if (dragObject == null)
+			if (runtimeDragObject == null)
 			{
 				return;
 			}
 			
-			dragObject.AutoMoveAlongTrack (positionAlong, 0f, removePlayerControl);
+			runtimeDragObject.AutoMoveAlongTrack (positionAlong, 0f, removePlayerControl);
 		}
 		
 		

@@ -340,7 +340,7 @@ namespace AC
 		{
 			if (labelType == AC_LabelType.DialogueLine || labelType == AC_LabelType.DialogueSpeaker)
 			{
-				newLabel = "";
+				newLabel = string.Empty;
 			}
 		}
 
@@ -390,7 +390,7 @@ namespace AC
 					break;
 
 				case AC_LabelType.Hotspot:
-					string _newLabel = "";
+					string _newLabel = string.Empty;
 					if (invItem != null)
 					{
 						_newLabel = invItem.GetFullLabel (languageNumber);
@@ -462,7 +462,7 @@ namespace AC
 						if (speech != null)
 						{
 							string line = speech.displayText;
-							if (line != "" || updateIfEmpty)
+							if (line != string.Empty || updateIfEmpty)
 							{
 								newLabel = line;
 							}
@@ -487,14 +487,14 @@ namespace AC
 						{
 							string line = speech.GetSpeaker (languageNumber);
 
-							if (line != "" || updateIfEmpty || speech.GetSpeakingCharacter () == null)
+							if (line != string.Empty || updateIfEmpty || speech.GetSpeakingCharacter () == null)
 							{
 								newLabel = line;
 							}
 						}
 						else if (!KickStarter.speechManager.keepTextInBuffer)
 						{
-							newLabel = "";
+							newLabel = string.Empty;
 						}
 					}
 					break;

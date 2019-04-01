@@ -28,6 +28,7 @@ namespace AC
 
 		public bool isPlayer;
 		public GameObject obToAffect;
+		private GameObject runtimeObToAffect;
 		public int materialIndex;
 		public Material newMaterial;
 		public int newMaterialParameterID = -1;
@@ -46,11 +47,11 @@ namespace AC
 		{
 			if (isPlayer)
 			{
-				obToAffect = GetPlayerRenderer (KickStarter.player);
+				runtimeObToAffect = GetPlayerRenderer (KickStarter.player);
 			}
 			else
 			{
-				obToAffect = AssignFile (parameters, parameterID, constantID, obToAffect);
+				runtimeObToAffect = AssignFile (parameters, parameterID, constantID, obToAffect);
 			}
 
 			newMaterial = (Material) AssignObject <Material> (parameters, newMaterialParameterID, newMaterial);
@@ -59,11 +60,15 @@ namespace AC
 		
 		override public float Run ()
 		{
-			if (obToAffect && obToAffect.GetComponent <Renderer>() && newMaterial)
+			if (runtimeObToAffect && newMaterial)
 			{
-				Material[] mats = obToAffect.GetComponent <Renderer>().materials;
-				mats[materialIndex] = newMaterial;
-				obToAffect.GetComponent <Renderer>().materials = mats;
+				Renderer _renderer = runtimeObToAffect.GetComponent <Renderer>();
+				if (_renderer != null)
+				{
+					Material[] mats = _renderer.materials;
+					mats[materialIndex] = newMaterial;
+					runtimeObToAffect.GetComponent <Renderer>().materials = mats;
+				}
 			}
 			return 0f;
 		}

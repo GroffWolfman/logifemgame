@@ -43,12 +43,8 @@ namespace AC
 		public NPC associatedNPCPrefab;
 
 		private bool lockedPath;
-		private bool isTilting = false;
-		private float actualTilt;
-		private float targetTilt;
 		private float tankTurnFloat;
-		private LerpUtils.FloatLerp tiltLerp = new LerpUtils.FloatLerp ();
-		
+
 		private bool lockHotspotHeadTurning = false;
 		private Transform fpCam;
 		private FirstPersonCamera firstPersonCamera;
@@ -171,7 +167,7 @@ namespace AC
 				{
 					if (charState == CharState.Move)
 					{
-						charState = CharState.Decelerate;
+						StartDecelerating ();
 					}
 					else if (charState == CharState.Custom)
 					{
@@ -179,7 +175,8 @@ namespace AC
 					}
 				}
 				else if ((KickStarter.stateHandler.gameState == GameState.Cutscene && !lockedPath) || 
-				         (KickStarter.settingsManager.movementMethod == MovementMethod.PointAndClick) || 
+				         (KickStarter.settingsManager.movementMethod == MovementMethod.PointAndClick) ||
+						 (KickStarter.settingsManager.movementMethod == MovementMethod.None) ||
 				         (KickStarter.settingsManager.movementMethod == MovementMethod.StraightToCursor && KickStarter.settingsManager.singleTapStraight) || 
 				         IsMovingToHotspot ())
 				{
@@ -188,7 +185,7 @@ namespace AC
 			}
 			else if (activePath == null && charState == CharState.Move && !KickStarter.stateHandler.IsInGameplay () && KickStarter.stateHandler.gameState != GameState.Paused)
 			{
-				charState = CharState.Decelerate;
+				StartDecelerating ();
 			}
 
 			if (isJumping && !jumped)
@@ -198,22 +195,8 @@ namespace AC
 					isJumping = false;
 				}
 			}
-			
-			if (isTilting)
-			{
-				actualTilt = tiltLerp.Update (actualTilt, targetTilt, turnSpeed);
-				if (actualTilt == targetTilt)
-				{
-					isTilting = false;
-				}
-			}
-			
+
 			base._Update ();
-			
-			if (isTilting)
-			{
-				UpdateTilt ();
-			}
 		}
 		
 		
@@ -458,25 +441,30 @@ namespace AC
 			}
 		}
 		
-		
-		private void UpdateTilt ()
-		{
-			if (firstPersonCamera != null)
-			{
-				firstPersonCamera.SetPitch (actualTilt);
-			}
-		}
 
-
+		/**
+		 * Checks if the Player's FirstPersonCamera is looking up or down.
+		 */
 		public bool IsTilting ()
 		{
-			return isTilting;
+			if (FirstPersonCamera != null)
+			{
+				return firstPersonCamera.IsTilting ();
+			}
+			return false;
 		}
 
 
+		/**
+		 * Gets the angle by which the Player's FirstPersonCamera is looking up or down, with negative values looking upward.
+		 */
 		public float GetTilt ()
 		{
-			return actualTilt;
+			if (FirstPersonCamera != null)
+			{
+				return firstPersonCamera.GetTilt ();;
+			}
+			return 0f;
 		}
 		
 
@@ -494,8 +482,6 @@ namespace AC
 			
 			if (isInstant)
 			{
-				isTilting = false;
-
 				Vector3 lookDirection = (lookAtPosition - fpCam.position).normalized;
 				float angle = Mathf.Asin (lookDirection.y) * Mathf.Rad2Deg;
 				firstPersonCamera.SetPitch (-angle);
@@ -504,26 +490,32 @@ namespace AC
 			{
 				// Base the speed of tilt change on how much horizontal rotation is needed
 				
-				actualTilt = fpCam.eulerAngles.x;
-				if (actualTilt > 180)
-				{
-					actualTilt = actualTilt - 360;
-				}
-				
 				Quaternion oldRotation = fpCam.rotation;
 				fpCam.transform.LookAt (lookAtPosition);
-				targetTilt = fpCam.localEulerAngles.x;
+				float targetTilt = fpCam.localEulerAngles.x;
 				fpCam.rotation = oldRotation;
 				if (targetTilt > 180)
 				{
 					targetTilt = targetTilt - 360;
 				}
-				
-				Vector3 flatLookVector = lookAtPosition - transform.position;
-				flatLookVector.y = 0f;
-				
-				isTilting = true;
+				firstPersonCamera.SetPitch (targetTilt, false);
 			}
+		}
+
+
+		/**
+		 * <summary>Sets the tilt of a first-person camera.</summary>
+		 * <param name = "pitchAngle">The angle to tilt the camera towards, with 0 being horizontal, positive looking downard, and negative looking upward</param>
+		 * <param name = "isInstant">If True, the camera will be rotated instantly</param>
+		 */
+		public void SetTilt (float pitchAngle, bool isInstant)
+		{
+			if (firstPersonCamera == null)
+			{
+				return;
+			}
+			
+			firstPersonCamera.SetPitch (pitchAngle, isInstant);
 		}
 
 
@@ -735,7 +727,6 @@ namespace AC
 				Teleport (new Vector3 (playerData.playerLocX, playerData.playerLocY, playerData.playerLocZ));
 				SetRotation (playerData.playerRotY);
 				SetMoveDirectionAsForward ();
-
 			}
 
 			walkSpeedScale = playerData.playerWalkSpeed;

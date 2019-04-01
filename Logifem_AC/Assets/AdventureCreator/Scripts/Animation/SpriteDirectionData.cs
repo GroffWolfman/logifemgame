@@ -59,6 +59,18 @@ namespace AC
 		}
 
 
+		/**
+		 * An array containing data about the various directions the sprite can face.
+		 */
+		public SpriteDirection[] SpriteDirections
+		{
+			get
+			{
+				return spriteDirections;
+			}
+		}
+
+
 		#if UNITY_EDITOR
 
 		public void ShowGUI ()
@@ -273,8 +285,11 @@ namespace AC
 		}
 
 
+		/**
+		 * A data container for a direction that a sprite can face
+		 */
 		[System.Serializable]
-		private struct SpriteDirection
+		public struct SpriteDirection
 		{
 
 			/** The suffix (i.e. "D") for the direction */

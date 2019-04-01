@@ -27,6 +27,17 @@ namespace AC
 		}
 
 
+		public static Object GetObjectToPing (string fullName)
+		{
+			#if RogoLipSyncIsPresent
+			LipSyncData lipSyncFile = Resources.Load (fullName) as LipSyncData;
+			return lipSyncFile;
+			#else
+			return null;
+			#endif
+		}
+
+
 		public static void Play (Char speaker, int lineID, string language)
 		{
 			if (speaker == null)

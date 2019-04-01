@@ -449,12 +449,14 @@ namespace AC
 					KillActionLists ();
 					
 					// If player has changed, destroy the old one and load in the new one
+					bool resetPlayer = false;
 					if (KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow)
 					{
 						if ((KickStarter.player == null && saveData.mainData.currentPlayerID != KickStarter.settingsManager.GetEmptyPlayerID ()) ||
 							(KickStarter.player != null && KickStarter.player.ID != saveData.mainData.currentPlayerID))
 						{
 							KickStarter.ResetPlayer (GetPlayerByID (saveData.mainData.currentPlayerID), saveData.mainData.currentPlayerID, true, Quaternion.identity, false, true);
+							resetPlayer = true;
 						}
 					}
 
@@ -464,6 +466,12 @@ namespace AC
 					bool forceReload = KickStarter.settingsManager.reloadSceneWhenLoading;
 					if (forceReload || (newScene != UnityVersionHandler.GetCurrentSceneNumber () && activeSelectiveLoad.loadScene))
 					{
+						if (resetPlayer && KickStarter.settingsManager.reloadSceneWhenLoading)
+						{
+							// Force a fade-out to hide the player switch
+							KickStarter.mainCamera.FadeOut (0f);
+						}
+
 						loadingGame = LoadingGame.InNewScene;
 						KickStarter.sceneChanger.ChangeScene (new SceneInfo ("", newScene), false, forceReload);
 					}

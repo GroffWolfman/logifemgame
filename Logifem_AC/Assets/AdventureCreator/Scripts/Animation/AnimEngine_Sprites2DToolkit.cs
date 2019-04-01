@@ -46,7 +46,7 @@ namespace AC
 			}
 
 			EditorGUILayout.BeginVertical ("Button");
-			EditorGUILayout.LabelField ("Standard 2D animations:", EditorStyles.boldLabel);
+			EditorGUILayout.LabelField ("Standard 2D animations", EditorStyles.boldLabel);
 
 			character.talkingAnimation = TalkingAnimation.Standard;
 			character.spriteChild = (Transform) CustomGUILayout.ObjectField <Transform> ("Sprite child:", character.spriteChild, true, "", "The sprite Transform, which should be a child GameObject");
@@ -191,7 +191,7 @@ namespace AC
 			string clip2DNew = action.clip2D;
 			if (action.includeDirection)
 			{
-				clip2DNew += action.animChar.GetSpriteDirection ();
+				clip2DNew += character.GetSpriteDirection ();
 			}
 			
 			if (!action.isRunning)
@@ -200,22 +200,22 @@ namespace AC
 				
 				if (action.method == ActionCharAnim.AnimMethodChar.PlayCustom && action.clip2D != "")
 				{
-					action.animChar.charState = CharState.Custom;
+					character.charState = CharState.Custom;
 					
 					if (action.playMode == AnimPlayMode.Loop)
 					{
-						tk2DIntegration.PlayAnimation (action.animChar.spriteChild, clip2DNew, true, WrapMode.Loop);
+						tk2DIntegration.PlayAnimation (character.spriteChild, clip2DNew, true, WrapMode.Loop);
 						action.willWait = false;
 					}
 					else
 					{
-						tk2DIntegration.PlayAnimation (action.animChar.spriteChild, clip2DNew, true, WrapMode.Once);
+						tk2DIntegration.PlayAnimation (character.spriteChild, clip2DNew, true, WrapMode.Once);
 					}
 				}
 
 				else if (action.method == ActionCharAnim.AnimMethodChar.ResetToIdle)
 				{
-					action.animChar.ResetBaseClips ();
+					character.ResetBaseClips ();
 				}
 				
 				else if (action.method == ActionCharAnim.AnimMethodChar.SetStandard)
@@ -224,19 +224,19 @@ namespace AC
 					{
 						if (action.standard == AnimStandard.Idle)
 						{
-							action.animChar.idleAnimSprite = action.clip2D;
+							character.idleAnimSprite = action.clip2D;
 						}
 						else if (action.standard == AnimStandard.Walk)
 						{
-							action.animChar.walkAnimSprite = action.clip2D;
+							character.walkAnimSprite = action.clip2D;
 						}
 						else if (action.standard == AnimStandard.Talk)
 						{
-							action.animChar.talkAnimSprite = action.clip2D;
+							character.talkAnimSprite = action.clip2D;
 						}
 						else if (action.standard == AnimStandard.Run)
 						{
-							action.animChar.runAnimSprite = action.clip2D;
+							character.runAnimSprite = action.clip2D;
 						}
 					}
 
@@ -244,11 +244,11 @@ namespace AC
 					{
 						if (action.standard == AnimStandard.Walk)
 						{
-							action.animChar.walkSpeedScale = action.newSpeed;
+							character.walkSpeedScale = action.newSpeed;
 						}
 						else if (action.standard == AnimStandard.Run)
 						{
-							action.animChar.runSpeedScale = action.newSpeed;
+							character.runSpeedScale = action.newSpeed;
 						}
 					}
 
@@ -258,28 +258,28 @@ namespace AC
 						{
 							if (action.newSound != null)
 							{
-								action.animChar.walkSound = action.newSound;
+								character.walkSound = action.newSound;
 							}
 							else
 							{
-								action.animChar.walkSound = null;
+								character.walkSound = null;
 							}
 						}
 						else if (action.standard == AnimStandard.Run)
 						{
 							if (action.newSound != null)
 							{
-								action.animChar.runSound = action.newSound;
+								character.runSound = action.newSound;
 							}
 							else
 							{
-								action.animChar.runSound = null;
+								character.runSound = null;
 							}
 						}
 					}
 				}
 				
-				if (action.willWait && action.clip2D != "")
+				if (action.willWait && !string.IsNullOrEmpty (action.clip2D))
 				{
 					if (action.method == ActionCharAnim.AnimMethodChar.PlayCustom)
 					{
@@ -290,9 +290,9 @@ namespace AC
 			
 			else
 			{
-				if (action.animChar.spriteChild && action.clip2D != "")
+				if (character.spriteChild && action.clip2D != "")
 				{
-					if (!tk2DIntegration.IsAnimationPlaying (action.animChar.spriteChild, action.clip2D))
+					if (!tk2DIntegration.IsAnimationPlaying (character.spriteChild, action.clip2D))
 					{
 						action.isRunning = false;
 						return 0f;
@@ -313,37 +313,37 @@ namespace AC
 			string clip2DNew = action.clip2D;
 			if (action.includeDirection)
 			{
-				clip2DNew += action.animChar.GetSpriteDirection ();
+				clip2DNew += character.GetSpriteDirection ();
 			}
 
 			if (action.method == ActionCharAnim.AnimMethodChar.PlayCustom && action.clip2D != "")
 			{
 				if (!action.willWait || action.playMode == AnimPlayMode.Loop)
 				{
-					action.animChar.charState = CharState.Custom;
+					character.charState = CharState.Custom;
 					
 					if (action.playMode == AnimPlayMode.Loop)
 					{
-						tk2DIntegration.PlayAnimation (action.animChar.spriteChild, clip2DNew, true, WrapMode.Loop);
+						tk2DIntegration.PlayAnimation (character.spriteChild, clip2DNew, true, WrapMode.Loop);
 						action.willWait = false;
 					}
 					else
 					{
-						tk2DIntegration.PlayAnimation (action.animChar.spriteChild, clip2DNew, true, WrapMode.Once);
+						tk2DIntegration.PlayAnimation (character.spriteChild, clip2DNew, true, WrapMode.Once);
 					}
 				}
 				else
 				{
 					if (action.playMode == AnimPlayMode.PlayOnce)
 					{
-						action.animChar.charState = CharState.Idle;
+						character.charState = CharState.Idle;
 					}
 				}
 			}
 			
 			else if (action.method == ActionCharAnim.AnimMethodChar.ResetToIdle)
 			{
-				action.animChar.ResetBaseClips ();
+				character.ResetBaseClips ();
 			}
 
 			else if (action.method == ActionCharAnim.AnimMethodChar.SetStandard)
@@ -352,19 +352,19 @@ namespace AC
 				{
 					if (action.standard == AnimStandard.Idle)
 					{
-						action.animChar.idleAnimSprite = action.clip2D;
+						character.idleAnimSprite = action.clip2D;
 					}
 					else if (action.standard == AnimStandard.Walk)
 					{
-						action.animChar.walkAnimSprite = action.clip2D;
+						character.walkAnimSprite = action.clip2D;
 					}
 					else if (action.standard == AnimStandard.Talk)
 					{
-						action.animChar.talkAnimSprite = action.clip2D;
+						character.talkAnimSprite = action.clip2D;
 					}
 					else if (action.standard == AnimStandard.Run)
 					{
-						action.animChar.runAnimSprite = action.clip2D;
+						character.runAnimSprite = action.clip2D;
 					}
 				}
 				
@@ -372,11 +372,11 @@ namespace AC
 				{
 					if (action.standard == AnimStandard.Walk)
 					{
-						action.animChar.walkSpeedScale = action.newSpeed;
+						character.walkSpeedScale = action.newSpeed;
 					}
 					else if (action.standard == AnimStandard.Run)
 					{
-						action.animChar.runSpeedScale = action.newSpeed;
+						character.runSpeedScale = action.newSpeed;
 					}
 				}
 				
@@ -386,22 +386,22 @@ namespace AC
 					{
 						if (action.newSound != null)
 						{
-							action.animChar.walkSound = action.newSound;
+							character.walkSound = action.newSound;
 						}
 						else
 						{
-							action.animChar.walkSound = null;
+							character.walkSound = null;
 						}
 					}
 					else if (action.standard == AnimStandard.Run)
 					{
 						if (action.newSound != null)
 						{
-							action.animChar.runSound = action.newSound;
+							character.runSound = action.newSound;
 						}
 						else
 						{
-							action.animChar.runSound = null;
+							character.runSound = null;
 						}
 					}
 				}
@@ -469,7 +469,7 @@ namespace AC
 			{
 				label = action._anim2D.name;
 				
-				if (action.method == AnimMethod.PlayCustom && action.clip2D != "")
+				if (action.method == AnimMethod.PlayCustom && !string.IsNullOrEmpty (action.clip2D))
 				{
 					label += " - " + action.clip2D;
 				}
@@ -481,7 +481,7 @@ namespace AC
 
 		public override void ActionAnimAssignValues (ActionAnim action, List<ActionParameter> parameters)
 		{
-			action._anim2D = action.AssignFile (parameters, action.parameterID, action.constantID, action._anim2D);
+			action.runtimeAnim2D = action.AssignFile (parameters, action.parameterID, action.constantID, action._anim2D);
 		}
 
 		
@@ -491,21 +491,21 @@ namespace AC
 			{
 				action.isRunning = true;
 
-				if (action._anim2D && action.clip2D != "")
+				if (action.runtimeAnim2D != null && !string.IsNullOrEmpty (action.clip2D))
 				{
 					if (action.method == AnimMethod.PlayCustom)
 					{
 						if (action.wrapMode2D == ActionAnim.WrapMode2D.Loop)
 						{
-							tk2DIntegration.PlayAnimation (action._anim2D, action.clip2D, true, WrapMode.Loop);
+							tk2DIntegration.PlayAnimation (action.runtimeAnim2D, action.clip2D, true, WrapMode.Loop);
 						}
 						else if (action.wrapMode2D == ActionAnim.WrapMode2D.PingPong)
 						{
-							tk2DIntegration.PlayAnimation (action._anim2D, action.clip2D, true, WrapMode.PingPong);
+							tk2DIntegration.PlayAnimation (action.runtimeAnim2D, action.clip2D, true, WrapMode.PingPong);
 						}
 						else
 						{
-							tk2DIntegration.PlayAnimation (action._anim2D, action.clip2D, true, WrapMode.Once);
+							tk2DIntegration.PlayAnimation (action.runtimeAnim2D, action.clip2D, true, WrapMode.Once);
 						}
 						
 						if (action.willWait)
@@ -516,7 +516,7 @@ namespace AC
 					
 					else if (action.method == AnimMethod.StopCustom)
 					{
-						tk2DIntegration.StopAnimation (action._anim2D);
+						tk2DIntegration.StopAnimation (action.runtimeAnim2D);
 					}
 					
 					else if (action.method == AnimMethod.BlendShape)
@@ -528,9 +528,9 @@ namespace AC
 			}
 			else
 			{
-				if (action._anim2D && action.clip2D != "")
+				if (action.runtimeAnim2D != null && !string.IsNullOrEmpty (action.clip2D))
 				{
-					if (!tk2DIntegration.IsAnimationPlaying (action._anim2D, action.clip2D))
+					if (!tk2DIntegration.IsAnimationPlaying (action.runtimeAnim2D, action.clip2D))
 					{
 						action.isRunning = false;
 					}
@@ -551,27 +551,27 @@ namespace AC
 			{
 				action.isRunning = true;
 				
-				if (action._anim2D && action.clip2D != "")
+				if (action.runtimeAnim2D != null && !string.IsNullOrEmpty (action.clip2D))
 				{
 					if (action.method == AnimMethod.PlayCustom)
 					{
 						if (action.wrapMode2D == ActionAnim.WrapMode2D.Loop)
 						{
-							tk2DIntegration.PlayAnimation (action._anim2D, action.clip2D, true, WrapMode.Loop);
+							tk2DIntegration.PlayAnimation (action.runtimeAnim2D, action.clip2D, true, WrapMode.Loop);
 						}
 						else if (action.wrapMode2D == ActionAnim.WrapMode2D.PingPong)
 						{
-							tk2DIntegration.PlayAnimation (action._anim2D, action.clip2D, true, WrapMode.PingPong);
+							tk2DIntegration.PlayAnimation (action.runtimeAnim2D, action.clip2D, true, WrapMode.PingPong);
 						}
 						else
 						{
-							tk2DIntegration.PlayAnimation (action._anim2D, action.clip2D, true, WrapMode.Once);
+							tk2DIntegration.PlayAnimation (action.runtimeAnim2D, action.clip2D, true, WrapMode.Once);
 						}
 					}
 					
 					else if (action.method == AnimMethod.StopCustom)
 					{
-						tk2DIntegration.StopAnimation (action._anim2D);
+						tk2DIntegration.StopAnimation (action.runtimeAnim2D);
 					}
 				}
 			}

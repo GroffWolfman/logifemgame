@@ -31,7 +31,9 @@ namespace AC
 		public int charToFollowID = 0;
 
 		public NPC npcToMove;
+		private NPC runtimeNpcToMove;
 		public Char charToFollow;
+		private Char runtimeCharToFollow;
 		public bool followPlayer;
 		public bool faceWhenIdle;
 		public float updateFrequency = 2f;
@@ -53,24 +55,24 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			npcToMove = AssignFile <NPC> (parameters, npcToMoveParameterID, npcToMoveID, npcToMove);
-			charToFollow = AssignFile <Char> (parameters, charToFollowParameterID, charToFollowID, charToFollow);
+			runtimeNpcToMove = AssignFile <NPC> (parameters, npcToMoveParameterID, npcToMoveID, npcToMove);
+			runtimeCharToFollow = AssignFile <Char> (parameters, charToFollowParameterID, charToFollowID, charToFollow);
 		}
 		
 		
 		override public float Run ()
 		{
-			if (npcToMove)
+			if (runtimeNpcToMove)
 			{
 				if (followType == FollowType.StopFollowing)
 				{
-					npcToMove.StopFollowing ();
+					runtimeNpcToMove.StopFollowing ();
 					return 0f;
 				}
 
-				if (followPlayer || charToFollow != (Char) npcToMove)
+				if (followPlayer || runtimeCharToFollow != (Char) runtimeNpcToMove)
 				{
-					npcToMove.FollowAssign (charToFollow, followPlayer, updateFrequency, followDistance, followDistanceMax, faceWhenIdle, randomDirection);
+					runtimeNpcToMove.FollowAssign (runtimeCharToFollow, followPlayer, updateFrequency, followDistance, followDistanceMax, faceWhenIdle, randomDirection);
 				}
 			}
 

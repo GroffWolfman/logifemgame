@@ -853,6 +853,7 @@ namespace AC
 					}
 
 					EditorGUILayout.EndScrollView ();
+					EditorGUILayout.HelpBox ("Filtering " + numInFilter + " out of " + _vars.Count + " variables.", MessageType.Info);
 				}
 				else if (_vars.Count > 0 && !string.IsNullOrEmpty (filter))
 				{

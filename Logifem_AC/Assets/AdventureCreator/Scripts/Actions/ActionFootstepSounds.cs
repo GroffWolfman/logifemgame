@@ -26,6 +26,7 @@ namespace AC
 		public int constantID = 0;
 		public int parameterID = -1;
 		public FootstepSounds footstepSounds;
+		private FootstepSounds runtimeFootstepSounds;
 
 		public bool isPlayer;
 
@@ -50,19 +51,19 @@ namespace AC
 			{
 				if (KickStarter.player != null)
 				{
-					footstepSounds = KickStarter.player.GetComponentInChildren <FootstepSounds>();
+					runtimeFootstepSounds = KickStarter.player.GetComponentInChildren <FootstepSounds>();
 				}
 			}
 			else
 			{
-				footstepSounds = AssignFile <FootstepSounds> (parameters, parameterID, constantID, footstepSounds);
+				runtimeFootstepSounds = AssignFile <FootstepSounds> (parameters, parameterID, constantID, footstepSounds);
 			}
 		}
 
 
 		override public float Run ()
 		{
-			if (footstepSounds == null)
+			if (runtimeFootstepSounds == null)
 			{
 				ACDebug.LogWarning ("No FootstepSounds component set.");
 			}
@@ -70,11 +71,11 @@ namespace AC
 			{
 				if (footstepSoundType == FootstepSoundType.Walk)
 				{
-					footstepSounds.footstepSounds = newSounds;
+					runtimeFootstepSounds.footstepSounds = newSounds;
 				}
 				else if (footstepSoundType == FootstepSoundType.Run)
 				{
-					footstepSounds.runSounds = newSounds;
+					runtimeFootstepSounds.runSounds = newSounds;
 				}
 			}
 
@@ -161,13 +162,11 @@ namespace AC
 		override public void AssignConstantIDs (bool saveScriptsToo, bool fromAssetFile)
 		{
 			FootstepSounds obToUpdate = footstepSounds;
-			Debug.Log (isPlayer + " " + fromAssetFile);
 			if (isPlayer)
 			{
 				if (!fromAssetFile && GameObject.FindObjectOfType <Player>() != null)
 				{
 					obToUpdate = GameObject.FindObjectOfType <Player>().GetComponentInChildren <FootstepSounds>();
-					Debug.Log (obToUpdate);
 				}
 
 				if (obToUpdate == null && AdvGame.GetReferences ().settingsManager != null)

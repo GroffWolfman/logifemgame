@@ -256,7 +256,9 @@ namespace AC
 					{
 						if (KickStarter.settingsManager != null && KickStarter.settingsManager.movementMethod == MovementMethod.FirstPerson)
 						{
+							EditorGUILayout.EndHorizontal ();
 							EditorGUILayout.HelpBox ("Since this is a First Person game, the scene's default camera will be overridden during gameplay by the Player's first person camera.", MessageType.Info);
+							EditorGUILayout.BeginHorizontal ();
 						}
 					}
 					EditorGUILayout.EndHorizontal ();

@@ -90,3 +90,6 @@ MonoBehaviour:
   showInEditor: 0
   cancelInteractions: 0
   triggerReacts: 0
+  detectionMethod: 0
+  detectsPlayer: 1
+  obsToDetect: []

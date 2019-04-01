@@ -215,7 +215,7 @@ namespace AC
 		{
 			if (playerOnTransition)
 			{
-				ACDebug.Log ("New player prefab found - " + playerOnTransition.name + " deleted");
+				ACDebug.Log ("New player found - " + playerOnTransition.name + " deleted");
 				DestroyImmediate (playerOnTransition.gameObject);
 			}
 		}

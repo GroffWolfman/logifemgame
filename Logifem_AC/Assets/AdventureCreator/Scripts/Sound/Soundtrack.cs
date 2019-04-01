@@ -144,6 +144,7 @@ namespace AC
 		 * <param name = "fadeTime">The fade-in duration, in seconds</param>
 		 * <param name = "resumeIfPlayedBefore">If True, and the track has been both played before and stopped before it finished, the track will be resumed</param>
 		 * <param name = "newTrackTimeSamples">The timeSamples to play the new track from, if not overridden with resumeIfPlayedBefore</param>
+		 * <returns>The duration, in seconds, for the new track to begin playing and the previous track transition to end</reuturns>
 		 */
 		public float Play (int trackID, bool loop, bool isQueued, float fadeTime, bool resumeIfPlayedBefore = false, int newTrackTimeSamples = 0)
 		{
@@ -159,6 +160,7 @@ namespace AC
 		 * <param name = "fadeTime">The crossfade duration, in seconds</param>
 		 * <param name = "resumeIfPlayedBefore">If True, and the track has been both played before and stopped before it finished, the track will be resumed</param>
 		 * <param name = "newTrackTimeSamples">The timeSamples to play the new track from, if not overridden with resumeIfPlayedBefore</param>
+		 * <returns>The duration, in seconds, for the new track to begin playing and the previous track transition to end</reuturns>
 		 */
 		public float Crossfade (int trackID, bool loop, bool isQueued, float fadeTime, bool resumeIfPlayedBefore = false, int newTrackTimeSamples = 0)
 		{
@@ -170,6 +172,7 @@ namespace AC
 		 * <summary>Resumes the last-played soundtrack queue</summary>
 		 * <param name = "fadeTime">The fade-in time in seconds, if greater than zero</param>
 		 * <param name = "playFromStart">If True, the track will play from the beginning</param>
+		 * <returns>The duration, in seconds, for the new track to begin playing and the previous track transition to end</reuturns>
 		 */
 		public float ResumeLastQueue (float fadeTime, bool playFromStart)
 		{

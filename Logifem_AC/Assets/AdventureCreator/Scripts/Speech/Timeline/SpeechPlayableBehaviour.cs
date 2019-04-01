@@ -87,7 +87,7 @@ namespace AC
 				#if UNITY_EDITOR
 				else if (KickStarter.menuPreview)
 				{
-					Speech previewSpeech = new Speech (speechPlayableData.messageText);
+					Speech previewSpeech = new Speech (speaker, speechPlayableData.messageText);
 					KickStarter.menuPreview.SetPreviewSpeech (previewSpeech, trackInstanceID);
 				}
 				#else

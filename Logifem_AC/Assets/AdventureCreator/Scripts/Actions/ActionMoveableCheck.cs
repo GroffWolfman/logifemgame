@@ -25,6 +25,7 @@ namespace AC
 		public DragBase dragObject;
 		public int constantID = 0;
 		public int parameterID = -1;
+		private DragBase runtimeDragObject;
 
 
 		public ActionMoveableCheck ()
@@ -38,15 +39,15 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			dragObject = AssignFile <DragBase> (parameters, parameterID, constantID, dragObject);
+			runtimeDragObject = AssignFile <DragBase> (parameters, parameterID, constantID, dragObject);
 		}
 		
 		
 		override public bool CheckCondition ()
 		{
-			if (dragObject)
+			if (runtimeDragObject != null)
 			{
-				return (KickStarter.playerInput.IsDragObjectHeld (dragObject));
+				return (KickStarter.playerInput.IsDragObjectHeld (runtimeDragObject));
 			}
 			return false;
 		}

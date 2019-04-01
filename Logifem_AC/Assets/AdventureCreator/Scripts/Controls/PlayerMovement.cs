@@ -243,7 +243,7 @@ namespace AC
 			{
 				if (KickStarter.player.charState == CharState.Move)
 				{
-					KickStarter.player.charState = CharState.Decelerate;
+					KickStarter.player.StartDecelerating ();
 				}
 				return;
 			}
@@ -254,7 +254,7 @@ namespace AC
 				
 				if (KickStarter.player.charState == CharState.Move && KickStarter.player.GetPath () == null)
 				{
-					KickStarter.player.charState = CharState.Decelerate;
+					KickStarter.player.StartDecelerating ();
 				}
 			}
 
@@ -299,7 +299,7 @@ namespace AC
 					{
 						if (KickStarter.player.charState == CharState.Move)
 						{
-							KickStarter.player.charState = CharState.Decelerate;
+							KickStarter.player.StartDecelerating ();
 						}
 					}
 				}
@@ -362,7 +362,7 @@ namespace AC
 					{
 						if (KickStarter.player.charState == CharState.Move)
 						{
-							KickStarter.player.charState = CharState.Decelerate;
+							KickStarter.player.StartDecelerating ();
 							movingFromHold = false;
 						}
 					}
@@ -378,7 +378,7 @@ namespace AC
 				{
 					if (KickStarter.player.charState == CharState.Move)
 					{
-						KickStarter.player.charState = CharState.Decelerate;
+						KickStarter.player.StartDecelerating ();
 						movingFromHold = false;
 					}
 
@@ -397,7 +397,7 @@ namespace AC
 					{
 						if (KickStarter.player.charState == CharState.Move)
 						{
-							KickStarter.player.charState = CharState.Decelerate;
+							KickStarter.player.StartDecelerating ();
 						}
 
 						if (KickStarter.player.GetPath ())
@@ -623,7 +623,7 @@ namespace AC
 				{
 					if (KickStarter.player.charState == CharState.Move && KickStarter.playerInteraction.GetHotspotMovingTo () == null)
 					{
-						KickStarter.player.charState = CharState.Decelerate;
+						KickStarter.player.StartDecelerating ();
 					}
 				}
 			}
@@ -657,7 +657,7 @@ namespace AC
 				{
 					if (KickStarter.player.charState == CharState.Move && KickStarter.playerInteraction.GetHotspotMovingTo () == null)
 					{
-						KickStarter.player.charState = CharState.Decelerate;
+						KickStarter.player.StartDecelerating ();
 					}
 				}
 			}
@@ -803,7 +803,7 @@ namespace AC
 			{
 				if (KickStarter.player.charState == CharState.Move)
 				{
-					KickStarter.player.charState = CharState.Decelerate;
+					KickStarter.player.StartDecelerating ();
 				}
 			}
 		}
@@ -827,7 +827,7 @@ namespace AC
 			{
 				if (KickStarter.player.GetPath () == null && KickStarter.player.charState == CharState.Move)
 				{
-					KickStarter.player.charState = CharState.Decelerate;
+					KickStarter.player.StartDecelerating ();
 				}
 				return;
 			}
@@ -959,7 +959,7 @@ namespace AC
 			}
 			else if (KickStarter.player.GetPath () == null && KickStarter.player.charState == CharState.Move)
 			{
-				KickStarter.player.charState = CharState.Decelerate;
+				KickStarter.player.StartDecelerating ();
 			}
 		}
 

@@ -29,8 +29,11 @@ namespace AC
 		public int objectToHoldID = 0;
 
 		public GameObject objectToHold;
+
 		public bool isPlayer;
 		public Char _char;
+		private Char runtimeChar;
+
 		public bool rotate90;
 		private GameObject loadedObject = null;
 		
@@ -48,7 +51,7 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			_char = AssignFile <Char> (_charID, _char);
+			runtimeChar = AssignFile <Char> (_charID, _char);
 			objectToHold = AssignFile (parameters, objectToHoldParameterID, objectToHoldID, objectToHold);
 
 			if (objectToHold != null && !objectToHold.activeInHierarchy)
@@ -58,7 +61,7 @@ namespace AC
 
 			if (isPlayer)
 			{
-				_char = KickStarter.player;
+				runtimeChar = KickStarter.player;
 			}
 		}
 
@@ -75,11 +78,11 @@ namespace AC
 		
 		override public float Run ()
 		{
-			if (_char)
+			if (runtimeChar)
 			{
-				if (_char.GetAnimEngine () != null && _char.GetAnimEngine ().ActionCharHoldPossible ())
+				if (runtimeChar.GetAnimEngine () != null && runtimeChar.GetAnimEngine ().ActionCharHoldPossible ())
 				{
-					if (_char.HoldObject (GetObjectToHold (), hand))
+					if (runtimeChar.HoldObject (GetObjectToHold (), hand))
 					{
 						if (rotate90)
 						{

@@ -75,6 +75,39 @@ namespace AC
 			if (parameters != null) ownParameters = parameters;
 
 			runtimeSpeaker = AssignFile <Char> (parameters, parameterID, constantID, speaker);
+
+			// Special case: Use associated NPC
+			if (speaker != null &&
+				speaker is Player &&
+				KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow &&
+				KickStarter.player != null)
+			{
+				// Make sure not the active Player
+				ConstantID speakerID = speaker.GetComponent <ConstantID>();
+				ConstantID playerID = KickStarter.player.GetComponent <ConstantID>();
+				if ((speakerID == null && playerID != null) ||
+					(speakerID != null && playerID == null) ||
+					(speakerID != null && playerID != null && speakerID.constantID != playerID.constantID))
+				{
+					Player speakerPlayer = speaker as Player;
+					foreach (PlayerPrefab playerPrefab in KickStarter.settingsManager.players)
+					{
+						if (playerPrefab != null && playerPrefab.playerOb == speakerPlayer)
+						{
+							if (speakerPlayer.associatedNPCPrefab != null)
+							{
+								ConstantID npcConstantID = speakerPlayer.associatedNPCPrefab.GetComponent <ConstantID>();
+								if (npcConstantID != null)
+								{
+									runtimeSpeaker = AssignFile <Char> (parameters, parameterID, npcConstantID.constantID, runtimeSpeaker);
+								}
+							}
+							break;
+						}
+					}
+				}
+			}
+
 			messageText = AssignString (parameters, messageParameterID, messageText);
 			
 			if (isPlayer)
@@ -438,7 +471,11 @@ namespace AC
 
 		public string GetTranslatableString (int index)
 		{
-			return GetSpeechArray () [index];
+			if (KickStarter.speechManager.separateLines)
+			{
+				return GetSpeechArray () [index];
+			}
+			return messageText;
 		}
 
 

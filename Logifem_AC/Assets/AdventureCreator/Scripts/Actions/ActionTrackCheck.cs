@@ -27,6 +27,7 @@ namespace AC
 		public Moveable_Drag dragObject;
 		public int dragConstantID = 0;
 		public int dragParameterID = -1;
+		private Moveable_Drag runtimeDragObject;
 
 		public float checkPosition;
 		public int checkPositionParameterID = -1;
@@ -46,7 +47,7 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			dragObject = AssignFile <Moveable_Drag> (parameters, dragParameterID, dragConstantID, dragObject);
+			runtimeDragObject = AssignFile <Moveable_Drag> (parameters, dragParameterID, dragConstantID, dragObject);
 			
 			checkPosition = AssignFloat (parameters, checkPositionParameterID, checkPosition);
 			checkPosition = Mathf.Max (0f, checkPosition);
@@ -62,7 +63,9 @@ namespace AC
 		
 		override public bool CheckCondition ()
 		{
-			float actualPositionAlong = dragObject.GetPositionAlong ();
+			if (runtimeDragObject == null) return false;
+
+			float actualPositionAlong = runtimeDragObject.GetPositionAlong ();
 
 			if (condition == IntCondition.EqualTo)
 			{

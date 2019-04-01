@@ -32,7 +32,10 @@ namespace AC
 		[HideInInspector] public List<VarPreset> varPresets = new List<VarPreset>();
 
 
-		private void Awake ()
+		/**
+		 * Creates run-time translations of local variables.
+		 */
+		public void OnStart ()
 		{
 			foreach (GVar _var in localVars)
 			{

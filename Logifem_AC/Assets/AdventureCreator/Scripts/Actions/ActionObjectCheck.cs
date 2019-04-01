@@ -27,6 +27,7 @@ namespace AC
 		public GameObject gameObject;
 		public int parameterID = -1;
 		public int constantID = 0; 
+		private GameObject runtimeGameObject;
 
 
 		public ActionObjectCheck ()
@@ -40,13 +41,13 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			gameObject = AssignFile (parameters, parameterID, constantID, gameObject);
+			runtimeGameObject = AssignFile (parameters, parameterID, constantID, gameObject);
 		}
 		
 		
 		override public bool CheckCondition ()
 		{
-			if (gameObject != null && gameObject.activeInHierarchy)
+			if (runtimeGameObject != null && runtimeGameObject.activeInHierarchy)
 			{
 				return true;
 			}

@@ -31,6 +31,7 @@ namespace AC
 		public bool isInstant = false;
 
 		public Highlight highlightObject;
+		private Highlight runtimeHighlightObject;
 
 		public int invID;
 		private int invNumber;
@@ -51,7 +52,7 @@ namespace AC
 		{
 			if (whatToHighlight == WhatToHighlight.SceneObject)
 			{
-				highlightObject = AssignFile <Highlight> (parameters, parameterID, constantID, highlightObject);
+				runtimeHighlightObject = AssignFile <Highlight> (parameters, parameterID, constantID, highlightObject);
 			}
 			else
 			{
@@ -62,7 +63,7 @@ namespace AC
 		
 		override public float Run ()
 		{
-			if (whatToHighlight == WhatToHighlight.SceneObject && highlightObject == null)
+			if (whatToHighlight == WhatToHighlight.SceneObject && runtimeHighlightObject == null)
 			{
 				return 0f;
 			}
@@ -73,31 +74,31 @@ namespace AC
 				{
 					if (isInstant)
 					{
-						highlightObject.HighlightOnInstant ();
+						runtimeHighlightObject.HighlightOnInstant ();
 					}
 					else
 					{
-						highlightObject.HighlightOn ();
+						runtimeHighlightObject.HighlightOn ();
 					}
 				}
 				else if (highlightType == HighlightType.Disable)
 				{
 					if (isInstant)
 					{
-						highlightObject.HighlightOffInstant ();
+						runtimeHighlightObject.HighlightOffInstant ();
 					}
 					else
 					{
-						highlightObject.HighlightOff ();
+						runtimeHighlightObject.HighlightOff ();
 					}
 				}
 				else if (highlightType == HighlightType.PulseOnce)
 				{
-					highlightObject.Flash ();
+					runtimeHighlightObject.Flash ();
 				}
 				else if (highlightType == HighlightType.PulseContinually)
 				{
-					highlightObject.Pulse ();
+					runtimeHighlightObject.Pulse ();
 				}
 			}
 

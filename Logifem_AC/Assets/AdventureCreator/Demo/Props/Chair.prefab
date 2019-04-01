@@ -144,6 +144,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 149ebb75ff6614c3aa69fa9ba240aec2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  constantID: 0
+  constantID: 21352
   retainInPrefab: 0
   autoManual: 0

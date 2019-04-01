@@ -26,6 +26,7 @@ namespace AC
 		public int parameterID = -1;
 		public int constantID = 0;
 		public Hotspot hotspot;
+		private Hotspot runtimeHotspot;
 
 		public InteractionType interactionType;
 		public ChangeType changeType = ChangeType.Enable;
@@ -43,44 +44,44 @@ namespace AC
 
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			hotspot = AssignFile <Hotspot> (parameters, parameterID, constantID, hotspot);
+			runtimeHotspot = AssignFile <Hotspot> (parameters, parameterID, constantID, hotspot);
 		}
 
 		
 		override public float Run ()
 		{
-			if (hotspot == null)
+			if (runtimeHotspot == null)
 			{
 				return 0f;
 			}
 
 			if (interactionType == InteractionType.Use)
 			{
-				if (hotspot.useButtons.Count > number)
+				if (runtimeHotspot.useButtons.Count > number)
 				{
-					ChangeButton (hotspot.useButtons [number]);
+					ChangeButton (runtimeHotspot.useButtons [number]);
 				}
 				else
 				{
-					ACDebug.LogWarning ("Cannot change Hotspot " + hotspot.gameObject.name + "'s Use button " + number.ToString () + " because it doesn't exist!", hotspot);
+					ACDebug.LogWarning ("Cannot change Hotspot " + runtimeHotspot.gameObject.name + "'s Use button " + number.ToString () + " because it doesn't exist!", runtimeHotspot);
 				}
 			}
 			else if (interactionType == InteractionType.Examine)
 			{
-				ChangeButton (hotspot.lookButton);
+				ChangeButton (runtimeHotspot.lookButton);
 			}
 			else if (interactionType == InteractionType.Inventory)
 			{
-				if (hotspot.invButtons.Count > number)
+				if (runtimeHotspot.invButtons.Count > number)
 				{
-					ChangeButton (hotspot.invButtons [number]);
+					ChangeButton (runtimeHotspot.invButtons [number]);
 				}
 				else
 				{
-					ACDebug.LogWarning ("Cannot change Hotspot " + hotspot.gameObject.name + "'s Inventory button " + number.ToString () + " because it doesn't exist!", hotspot);
+					ACDebug.LogWarning ("Cannot change Hotspot " + runtimeHotspot.gameObject.name + "'s Inventory button " + number.ToString () + " because it doesn't exist!", runtimeHotspot);
 				}
 			}
-			hotspot.ResetMainIcon ();
+			runtimeHotspot.ResetMainIcon ();
 
 			return 0f;
 		}

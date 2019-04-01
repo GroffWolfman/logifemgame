@@ -543,6 +543,28 @@ namespace AC
 		}
 
 
+		public static int ShowDocumentSelectorGUI (string label, List<Document> documents, int ID)
+		{
+			int docNumber = -1;
+			
+			List<string> labelList = new List<string>();
+			labelList.Add (" (None)");
+			foreach (Document document in documents)
+			{
+				labelList.Add (document.Title);
+			}
+			
+			docNumber = GetDocNumber (documents, ID) + 1;
+			docNumber = EditorGUILayout.Popup (label, docNumber, labelList.ToArray()) - 1;
+
+			if (docNumber >= 0)
+			{
+				return documents[docNumber].ID;
+			}
+			return -1;
+		}
+
+
 		private static int GetVarNumber (List<GVar> vars, int ID)
 		{
 			int i = 0;
@@ -564,6 +586,21 @@ namespace AC
 			foreach (InvItem _item in items)
 			{
 				if (_item.id == ID)
+				{
+					return i;
+				}
+				i++;
+			}
+			return -1;
+		}
+
+
+		private static int GetDocNumber (List<Document> documents, int ID)
+		{
+			int i = 0;
+			foreach (Document document in documents)
+			{
+				if (document.ID == ID)
 				{
 					return i;
 				}
@@ -666,6 +703,22 @@ namespace AC
 					else
 					{
 						EditorGUILayout.HelpBox ("An Inventory Manager is required to pass Inventory items.", MessageType.Warning);
+					}
+				}
+				else if (externalParameters[i].parameterType == ParameterType.Document)
+				{
+					if (AdvGame.GetReferences () && AdvGame.GetReferences ().inventoryManager)
+					{
+						linkedID = Action.ChooseParameterGUI (label + ":", ownParameters, linkedID, ParameterType.Document);
+						if (linkedID < 0)
+						{
+							InventoryManager inventoryManager = AdvGame.GetReferences ().inventoryManager;
+							localParameters[i].intValue = ShowDocumentSelectorGUI (label + ":", inventoryManager.documents, localParameters[i].intValue);
+						}
+					}
+					else
+					{
+						EditorGUILayout.HelpBox ("An Inventory Manager is required to pass Documents.", MessageType.Warning);
 					}
 				}
 				else if (externalParameters[i].parameterType == ParameterType.LocalVariable)
@@ -808,6 +861,18 @@ namespace AC
 
 		public override int GetInventoryReferences (List<ActionParameter> parameters, int _invID)
 		{
+			return GetParameterReferences (parameters, _invID, ParameterType.InventoryItem);
+		}
+
+
+		public override int GetDocumentReferences (List<ActionParameter> parameters, int _docID)
+		{
+			return GetParameterReferences (parameters, _docID, ParameterType.Document);
+		}
+
+
+		private int GetParameterReferences (List<ActionParameter> parameters, int _ID, ParameterType _paramType)
+		{
 			int thisCount = 0;
 
 			if (listSource == ListSource.InScene && actionList != null)
@@ -828,7 +893,7 @@ namespace AC
 
 			foreach (ActionParameter localParameter in localParameters)
 			{
-				if (localParameter != null && localParameter.parameterType == ParameterType.InventoryItem && _invID == localParameter.intValue)
+				if (localParameter != null && localParameter.parameterType == _paramType && _ID == localParameter.intValue)
 				{
 					thisCount ++;
 				}

@@ -26,6 +26,7 @@ namespace AC
 		public int constantID = 0;
 		public int parameterID = -1;
 		public Transform origin;
+		private Transform runtimeOrigin;
 
 		public AudioClip audioClip;
 		public int audioClipParameterID = -1;
@@ -42,7 +43,7 @@ namespace AC
 		
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			origin = AssignFile (parameters, parameterID, constantID, origin);
+			runtimeOrigin = AssignFile (parameters, parameterID, constantID, origin);
 			audioClip = (AudioClip) AssignObject <AudioClip> (parameters, audioClipParameterID, audioClip);
 		}
 		
@@ -59,9 +60,9 @@ namespace AC
 				isRunning = true;
 
 				Vector3 originPos = Camera.main.transform.position;
-				if (origin != null)
+				if (runtimeOrigin != null)
 				{
-					originPos = origin.position;
+					originPos = runtimeOrigin.position;
 				}
 
 				float volume = Options.GetSFXVolume ();

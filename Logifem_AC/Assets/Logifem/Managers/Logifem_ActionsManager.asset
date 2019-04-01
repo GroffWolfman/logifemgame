@@ -651,6 +651,12 @@ MonoBehaviour:
     description: Saves and loads save-game files
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionOptionSet
+    category: 14
+    title: Set Option
+    description: Set an Options variable to a specific value
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionSceneAdd
     category: 15
     title: Add or remove

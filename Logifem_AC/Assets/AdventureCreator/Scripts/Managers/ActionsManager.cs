@@ -238,7 +238,7 @@ namespace AC
 			{
 				GUILayout.BeginHorizontal ();
 				GUILayout.Label ("Folder to search:", GUILayout.Width (110f));
-				GUILayout.Label (customFolderPath, EditorStyles.textField);
+				GUILayout.Label (customFolderPath, EditorStyles.textField, GUILayout.MaxWidth (220f));
 				GUILayout.EndHorizontal ();
 				GUILayout.BeginHorizontal ();
 				if (GUILayout.Button ("Set directory", EditorStyles.miniButtonLeft))
@@ -387,43 +387,56 @@ namespace AC
 
 		private void SearchForInstances (bool justLocal, ActionType actionType)
 		{
+			bool foundInstance = false;
 			if (justLocal)
 			{
-				SearchSceneForType ("", actionType);
-				return;
-			}
-			
-			// First look for lines that already have an assigned lineID
-			string[] sceneFiles = AdvGame.GetSceneFiles ();
-			if (sceneFiles == null || sceneFiles.Length == 0)
-			{
-				Debug.LogWarning ("Cannot search scenes - no enabled scenes could be found in the Build Settings.");
+				foundInstance = SearchSceneForType (string.Empty, actionType);
 			}
 			else
 			{
-				foreach (string sceneFile in sceneFiles)
+				// First look for lines that already have an assigned lineID
+				string[] sceneFiles = AdvGame.GetSceneFiles ();
+				if (sceneFiles == null || sceneFiles.Length == 0)
 				{
-					SearchSceneForType (sceneFile, actionType);
+					Debug.LogWarning ("Cannot search scenes - no enabled scenes could be found in the Build Settings.");
+				}
+				else
+				{
+					foreach (string sceneFile in sceneFiles)
+					{
+						bool foundSceneInstance = SearchSceneForType (sceneFile, actionType);
+						if (foundSceneInstance)
+						{
+							foundInstance = true;
+						}
+					}
+				}
+
+				ActionListAsset[] allActionListAssets = AdvGame.GetReferences ().speechManager.GetAllActionListAssets ();
+				foreach (ActionListAsset actionListAsset in allActionListAssets)
+				{
+					int[] foundIDs = SearchActionsForType (actionListAsset.actions, actionType);
+					if (foundIDs != null && foundIDs.Length > 0)
+					{
+						ACDebug.Log ("(Asset: " + actionListAsset.name + ") Found " + foundIDs.Length + " instances of '" + actionType.GetFullTitle () + "' " + CreateIDReport (foundIDs), actionListAsset);
+						foundInstance = true;
+					}
 				}
 			}
 
-			ActionListAsset[] allActionListAssets = AdvGame.GetReferences ().speechManager.GetAllActionListAssets ();
-			foreach (ActionListAsset actionListAsset in allActionListAssets)
+			if (!foundInstance)
 			{
-				int[] foundIDs = SearchActionsForType (actionListAsset.actions, actionType);
-				if (foundIDs != null && foundIDs.Length > 0)
-				{
-					ACDebug.Log ("(Asset: " + actionListAsset.name + ") Found " + foundIDs.Length + " instances of '" + actionType.GetFullTitle () + "' " + CreateIDReport (foundIDs), actionListAsset);
-				}
+				ACDebug.Log ("No instances of '" + actionType.GetFullTitle () + "' were found.");
 			}
 		}
 		
 		
-		private void SearchSceneForType (string sceneFile, ActionType actionType)
+		private bool SearchSceneForType (string sceneFile, ActionType actionType)
 		{
-			string sceneLabel = "";
-			
-			if (sceneFile != "")
+			string sceneLabel = string.Empty;
+			bool foundInstance = false;
+
+			if (sceneFile != string.Empty)
 			{
 				sceneLabel = "(Scene: " + sceneFile + ") ";
 				UnityVersionHandler.OpenScene (sceneFile);
@@ -437,8 +450,11 @@ namespace AC
 				if (foundIDs != null && foundIDs.Length > 0)
 				{
 					ACDebug.Log (sceneLabel + " Found " + foundIDs.Length + " instances in '" + list.gameObject.name + "' " + CreateIDReport (foundIDs), list.gameObject);
+					foundInstance = true;
 				}
 			}
+
+			return foundInstance;
 		}
 
 

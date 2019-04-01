@@ -36,6 +36,7 @@ namespace AC
 
 		#if CAN_USE_TIMELINE
 		public PlayableDirector director;
+		private PlayableDirector runtimeDirector;
 		public TimelineAsset newTimeline;
 		public int directorConstantID = 0;
 		public int directorParameterID = -1;
@@ -61,7 +62,7 @@ namespace AC
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
 			#if CAN_USE_TIMELINE
-			director = AssignFile <PlayableDirector> (parameters, directorParameterID, directorConstantID, director);
+			runtimeDirector = AssignFile <PlayableDirector> (parameters, directorParameterID, directorConstantID, director);
 
 			if (newBindings != null)
 			{
@@ -75,7 +76,7 @@ namespace AC
 						}
 						else
 						{
-							ACDebug.LogWarning ("Cannot bind timeline track to Player, because no Player was found!", director);
+							ACDebug.LogWarning ("Cannot bind timeline track to Player, because no Player was found!", runtimeDirector);
 						}
 					}
 					else
@@ -95,7 +96,7 @@ namespace AC
 			{
 				isRunning = true;
 
-				if (director != null)
+				if (runtimeDirector != null)
 				{
 					if (method == ActionDirectorMethod.Play)
 					{
@@ -105,12 +106,12 @@ namespace AC
 						{
 							PrepareDirector ();
 
-							director.time = 0f;
-							director.Play ();
+							runtimeDirector.time = 0f;
+							runtimeDirector.Play ();
 						}
 						else
 						{
-							director.Resume ();
+							runtimeDirector.Resume ();
 						}
 
 						if (willWait)
@@ -119,7 +120,7 @@ namespace AC
 							{
 								KickStarter.mainCamera.Disable ();
 							}
-							return ((float) director.duration - (float) director.time);
+							return ((float) runtimeDirector.duration - (float) runtimeDirector.time);
 						}
 					}
 					else if (method == ActionDirectorMethod.Stop)
@@ -131,14 +132,14 @@ namespace AC
 
 						if (pause)
 						{
-							director.Pause ();
+							runtimeDirector.Pause ();
 						}
 						else
 						{
 							PrepareDirectorEnd ();
 
-							director.time = director.duration;
-							director.Stop ();
+							runtimeDirector.time = runtimeDirector.duration;
+							runtimeDirector.Stop ();
 						}
 					}
 				}
@@ -162,7 +163,7 @@ namespace AC
 		override public void Skip ()
 		{
 			#if CAN_USE_TIMELINE
-			if (director != null)
+			if (runtimeDirector != null)
 			{
 				if (disableCamera)
 				{
@@ -171,35 +172,35 @@ namespace AC
 
 				if (method == ActionDirectorMethod.Play)
 				{
-					if (director.extrapolationMode == DirectorWrapMode.Loop)
+					if (runtimeDirector.extrapolationMode == DirectorWrapMode.Loop)
 					{
 						PrepareDirector ();
 
 						if (restart)
 						{
-							director.Play ();
+							runtimeDirector.Play ();
 						}
 						else
 						{
-							director.Resume ();
+							runtimeDirector.Resume ();
 						}
 						return;
 					}
 
 					PrepareDirectorEnd ();
 
-					director.Stop ();
-					director.time = director.duration;
+					runtimeDirector.Stop ();
+					runtimeDirector.time = runtimeDirector.duration;
 				}
 				else if (method == ActionDirectorMethod.Stop)
 				{
 					if (pause)
 					{
-						director.Pause ();
+						runtimeDirector.Pause ();
 					}
 					else
 					{
-						director.Stop ();
+						runtimeDirector.Stop ();
 					}
 				}
 			}
@@ -422,17 +423,17 @@ namespace AC
 		{
 			if (newTimeline != null)
 			{
-				if (director.playableAsset != null && director.playableAsset is TimelineAsset)
+				if (runtimeDirector.playableAsset != null && runtimeDirector.playableAsset is TimelineAsset)
 				{
-					TimelineAsset oldTimeline = (TimelineAsset) director.playableAsset;
+					TimelineAsset oldTimeline = (TimelineAsset) runtimeDirector.playableAsset;
 					GameObject[] transferBindings = new GameObject[oldTimeline.outputTrackCount];
 					for (int i=0; i<transferBindings.Length; i++)
 					{
 						TrackAsset trackAsset = oldTimeline.GetOutputTrack (i);
-						transferBindings[i] = director.GetGenericBinding (trackAsset) as GameObject;
+						transferBindings[i] = runtimeDirector.GetGenericBinding (trackAsset) as GameObject;
 					}
 
-					director.playableAsset = newTimeline;
+					runtimeDirector.playableAsset = newTimeline;
 
 					for (int i=0; i<transferBindings.Length; i++)
 					{
@@ -441,18 +442,18 @@ namespace AC
 							var track = newTimeline.GetOutputTrack (i);
 							if (track != null)
 							{
-								director.SetGenericBinding (track, transferBindings[i].gameObject);
+								runtimeDirector.SetGenericBinding (track, transferBindings[i].gameObject);
 							}
 		                }
 					}
 				}
 				else
 				{
-					director.playableAsset = newTimeline;
+					runtimeDirector.playableAsset = newTimeline;
 				}
 			}
 
-			TimelineAsset timelineAsset = director.playableAsset as TimelineAsset;
+			TimelineAsset timelineAsset = runtimeDirector.playableAsset as TimelineAsset;
 			if (timelineAsset != null)
 			{
 				for (int i=0; i<timelineAsset.outputTrackCount; i++)
@@ -463,14 +464,14 @@ namespace AC
 					{
 						if (trackAsset != null && newBindings[i].gameObject != null)
 						{
-							director.SetGenericBinding (trackAsset, newBindings[i].gameObject);
+							runtimeDirector.SetGenericBinding (trackAsset, newBindings[i].gameObject);
 						}
 	                }
 
-					GameObject bindingObject = director.GetGenericBinding (trackAsset) as GameObject;
+					GameObject bindingObject = runtimeDirector.GetGenericBinding (trackAsset) as GameObject;
 					if (bindingObject == null)
 					{
-						Animator bindingAnimator = director.GetGenericBinding (trackAsset) as Animator;
+						Animator bindingAnimator = runtimeDirector.GetGenericBinding (trackAsset) as Animator;
 						if (bindingAnimator != null)
 						{
 							bindingObject = bindingAnimator.gameObject;
@@ -482,7 +483,7 @@ namespace AC
 						Char bindingObjectChar = bindingObject.GetComponent <Char>();
 						if (bindingObjectChar != null)
 						{
-							bindingObjectChar.OnEnterTimeline (director, i);
+							bindingObjectChar.OnEnterTimeline (runtimeDirector, i);
 						}
 					}
 	            }
@@ -492,17 +493,17 @@ namespace AC
 
 		private void PrepareDirectorEnd ()
 		{
-			TimelineAsset timelineAsset = director.playableAsset as TimelineAsset;
+			TimelineAsset timelineAsset = runtimeDirector.playableAsset as TimelineAsset;
 			if (timelineAsset != null)
 			{
 				for (int i=0; i<timelineAsset.outputTrackCount; i++)
 				{
 					TrackAsset trackAsset = timelineAsset.GetOutputTrack (i);
 
-					GameObject bindingObject = director.GetGenericBinding (trackAsset) as GameObject;
+					GameObject bindingObject = runtimeDirector.GetGenericBinding (trackAsset) as GameObject;
 					if (bindingObject == null)
 					{
-						Animator bindingAnimator = director.GetGenericBinding (trackAsset) as Animator;
+						Animator bindingAnimator = runtimeDirector.GetGenericBinding (trackAsset) as Animator;
 						if (bindingAnimator != null)
 						{
 							bindingObject = bindingAnimator.gameObject;
@@ -514,7 +515,7 @@ namespace AC
 						Char bindingObjectChar = bindingObject.GetComponent <Char>();
 						if (bindingObjectChar != null)
 						{
-							bindingObjectChar.OnExitTimeline (director, i);
+							bindingObjectChar.OnExitTimeline (runtimeDirector, i);
 						}
 					}
 	            }

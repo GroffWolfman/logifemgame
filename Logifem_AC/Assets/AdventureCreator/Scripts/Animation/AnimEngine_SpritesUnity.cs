@@ -57,7 +57,7 @@ namespace AC
 		}
 
 		#endif
-		
+
 		
 		public override void CharSettingsGUI ()
 		{
@@ -253,7 +253,7 @@ namespace AC
 			string clip2DNew = action.clip2D;
 			if (action.includeDirection)
 			{
-				clip2DNew += action.animChar.GetSpriteDirection ();
+				clip2DNew += character.GetSpriteDirection ();
 			}
 			
 			if (!action.isRunning)
@@ -262,7 +262,7 @@ namespace AC
 				
 				if (action.method == ActionCharAnim.AnimMethodChar.PlayCustom && !string.IsNullOrEmpty (action.clip2D))
 				{
-					if (action.animChar.GetAnimator ())
+					if (character.GetAnimator ())
 					{
 						#if UNITY_EDITOR && (UNITY_5 || UNITY_2017_1_OR_NEWER)
 						int hash = Animator.StringToHash (clip2DNew);
@@ -272,10 +272,10 @@ namespace AC
 						}
 						#endif
 
-						action.animChar.charState = CharState.Custom;
-						action.animChar.GetAnimator ().CrossFade (clip2DNew, action.fadeTime, action.layerInt);
+						character.charState = CharState.Custom;
+						character.GetAnimator ().CrossFade (clip2DNew, action.fadeTime, action.layerInt);
 
-						if (action.hideHead && action.animChar.talkingAnimation == TalkingAnimation.Standard && action.animChar.separateTalkingLayer)
+						if (action.hideHead && character.talkingAnimation == TalkingAnimation.Standard && character.separateTalkingLayer)
 						{
 							PlayHeadAnim (hideHeadClip, false);
 						}
@@ -291,8 +291,8 @@ namespace AC
 					}
 					else
 					{
-						action.animChar.ResetBaseClips ();
-						action.animChar.charState = CharState.Idle;
+						character.ResetBaseClips ();
+						character.charState = CharState.Idle;
 					}
 				}
 				
@@ -302,19 +302,19 @@ namespace AC
 					{
 						if (action.standard == AnimStandard.Idle)
 						{
-							action.animChar.idleAnimSprite = action.clip2D;
+							character.idleAnimSprite = action.clip2D;
 						}
 						else if (action.standard == AnimStandard.Walk)
 						{
-							action.animChar.walkAnimSprite = action.clip2D;
+							character.walkAnimSprite = action.clip2D;
 						}
 						else if (action.standard == AnimStandard.Talk)
 						{
-							action.animChar.talkAnimSprite = action.clip2D;
+							character.talkAnimSprite = action.clip2D;
 						}
 						else if (action.standard == AnimStandard.Run)
 						{
-							action.animChar.runAnimSprite = action.clip2D;
+							character.runAnimSprite = action.clip2D;
 						}
 					}
 					
@@ -322,11 +322,11 @@ namespace AC
 					{
 						if (action.standard == AnimStandard.Walk)
 						{
-							action.animChar.walkSpeedScale = action.newSpeed;
+							character.walkSpeedScale = action.newSpeed;
 						}
 						else if (action.standard == AnimStandard.Run)
 						{
-							action.animChar.runSpeedScale = action.newSpeed;
+							character.runSpeedScale = action.newSpeed;
 						}
 					}
 					
@@ -336,22 +336,22 @@ namespace AC
 						{
 							if (action.newSound != null)
 							{
-								action.animChar.walkSound = action.newSound;
+								character.walkSound = action.newSound;
 							}
 							else
 							{
-								action.animChar.walkSound = null;
+								character.walkSound = null;
 							}
 						}
 						else if (action.standard == AnimStandard.Run)
 						{
 							if (action.newSound != null)
 							{
-								action.animChar.runSound = action.newSound;
+								character.runSound = action.newSound;
 							}
 							else
 							{
-								action.animChar.runSound = null;
+								character.runSound = null;
 							}
 						}
 					}
@@ -368,11 +368,11 @@ namespace AC
 			
 			else
 			{
-				if (action.animChar.GetAnimator ())
+				if (character.GetAnimator ())
 				{
 					// Calc how much longer left to wait
-					float totalLength = action.animChar.GetAnimator ().GetCurrentAnimatorStateInfo (action.layerInt).length;
-					float timeLeft = (1f - action.animChar.GetAnimator ().GetCurrentAnimatorStateInfo (action.layerInt).normalizedTime) * totalLength;
+					float totalLength = character.GetAnimator ().GetCurrentAnimatorStateInfo (action.layerInt).length;
+					float timeLeft = (1f - character.GetAnimator ().GetCurrentAnimatorStateInfo (action.layerInt).normalizedTime) * totalLength;
 					
 					// Subtract a small amount of time to prevent overshooting
 					timeLeft -= 0.1f;
@@ -385,12 +385,12 @@ namespace AC
 					{
 						if (action.method == ActionCharAnim.AnimMethodChar.ResetToIdle)
 						{
-							action.animChar.ResetBaseClips ();
-							action.animChar.charState = CharState.Idle;
+							character.ResetBaseClips ();
+							character.charState = CharState.Idle;
 						}
 						else if (action.idleAfter)
 						{
-							action.animChar.charState = CharState.Idle;
+							character.charState = CharState.Idle;
 						}
 						
 						action.isRunning = false;
@@ -400,7 +400,7 @@ namespace AC
 				else
 				{
 					action.isRunning = false;
-					action.animChar.charState = CharState.Idle;
+					character.charState = CharState.Idle;
 					return 0f;
 				}
 			}
@@ -418,27 +418,27 @@ namespace AC
 			}
 			else if (action.method == ActionCharAnim.AnimMethodChar.ResetToIdle)
 			{
-				action.animChar.ResetBaseClips ();
-				action.animChar.charState = CharState.Idle;
+				character.ResetBaseClips ();
+				character.charState = CharState.Idle;
 				return;
 			}
 			
 			string clip2DNew = action.clip2D;
 			if (action.includeDirection)
 			{
-				clip2DNew += action.animChar.GetSpriteDirection ();
+				clip2DNew += character.GetSpriteDirection ();
 			}
 			
 			if (action.method == ActionCharAnim.AnimMethodChar.PlayCustom)
 			{
 				if (action.willWait && action.idleAfter)
 				{
-					action.animChar.charState = CharState.Idle;
+					character.charState = CharState.Idle;
 				}
-				else if (action.animChar.GetAnimator ())
+				else if (character.GetAnimator ())
 				{
-					action.animChar.charState = CharState.Custom;
-					action.animChar.GetAnimator ().Play (clip2DNew, action.layerInt, 0.8f);
+					character.charState = CharState.Custom;
+					character.GetAnimator ().Play (clip2DNew, action.layerInt, 0.8f);
 				}
 			}
 		}
@@ -565,7 +565,7 @@ namespace AC
 		
 		public override void ActionAnimAssignValues (ActionAnim action, List<ActionParameter> parameters)
 		{
-			action.animator = action.AssignFile <Animator> (parameters, action.parameterID, action.constantID, action.animator);
+			action.runtimeAnimator = action.AssignFile <Animator> (parameters, action.parameterID, action.constantID, action.animator);
 		}
 		
 		
@@ -575,19 +575,19 @@ namespace AC
 			{
 				action.isRunning = true;
 				
-				if (action.animator && action.clip2D != "")
+				if (action.runtimeAnimator && !string.IsNullOrEmpty (action.clip2D))
 				{
 					if (action.method == AnimMethod.PlayCustom)
 					{
 						#if UNITY_EDITOR && (UNITY_5 || UNITY_2017_1_OR_NEWER)
 						int hash = Animator.StringToHash (action.clip2D);
-						if (!action.animator.HasState (action.layerInt, hash))
+						if (!action.runtimeAnimator.HasState (action.layerInt, hash))
 						{
-							ACDebug.LogWarning ("Cannot play clip " + action.clip2D + " on " + action.animator.name, action.animator.gameObject);
+							ACDebug.LogWarning ("Cannot play clip " + action.clip2D + " on " + action.runtimeAnimator.name, action.runtimeAnimator.gameObject);
 						}
 						#endif
 
-						action.animator.CrossFade (action.clip2D, action.fadeTime, action.layerInt);
+						action.runtimeAnimator.CrossFade (action.clip2D, action.fadeTime, action.layerInt);
 						
 						if (action.willWait)
 						{
@@ -603,9 +603,9 @@ namespace AC
 			}
 			else
 			{
-				if (action.animator && action.clip2D != "")
+				if (action.runtimeAnimator && !string.IsNullOrEmpty (action.clip2D))
 				{
-					if (action.animator.GetCurrentAnimatorStateInfo (action.layerInt).normalizedTime < 1f)
+					if (action.runtimeAnimator.GetCurrentAnimatorStateInfo (action.layerInt).normalizedTime < 1f)
 					{
 						return (action.defaultPauseTime / 6f);
 					}
@@ -623,11 +623,11 @@ namespace AC
 		
 		public override void ActionAnimSkip (ActionAnim action)
 		{
-			if (action.animator && action.clip2D != "")
+			if (action.runtimeAnimator && !string.IsNullOrEmpty (action.clip2D))
 			{
 				if (action.method == AnimMethod.PlayCustom)
 				{
-					action.animator.Play (action.clip2D, action.layerInt, 0.8f);
+					action.runtimeAnimator.Play (action.clip2D, action.layerInt, 0.8f);
 				}
 			}
 		}

@@ -103,6 +103,9 @@ namespace AC
 					{
 						if (hotspot && hotspot.playerTurnsHead)
 						{
+							//Transform faceTransform = (hotspot.centrePoint != null) ? hotspot.centrePoint : hotspot.transform;
+							//KickStarter.player.SetHeadTurnTarget (faceTransform, hotspot.GetIconPosition (true), false, HeadFacing.Hotspot);
+
 							KickStarter.player.SetHeadTurnTarget (hotspot.transform, hotspot.GetIconPosition (true), false, HeadFacing.Hotspot);
 						}
 						else if (button == null)
@@ -1090,7 +1093,7 @@ namespace AC
 						}
 					}
 					
-					if (button.playerAction == PlayerAction.WalkToMarker && _hotspot.walkToMarker)
+					if (button.playerAction == PlayerAction.WalkToMarker && _hotspot.walkToMarker != null)
 					{
 						if (Vector3.Distance (KickStarter.player.transform.position, _hotspot.walkToMarker.transform.position) > KickStarter.settingsManager.GetDestinationThreshold ())
 						{
@@ -1140,6 +1143,7 @@ namespace AC
 						{
 							lookVector = _hotspot.walkToMarker.transform.forward;
 							lookVector.y = 0;
+
 							KickStarter.player.EndPath ();
 							KickStarter.player.SetLookDirection (lookVector, false);
 							
@@ -1150,7 +1154,8 @@ namespace AC
 									KickStarter.player.SetLookDirection (lookVector, true);
 									break;
 								}
-								yield return new WaitForFixedUpdate ();			
+
+								yield return new WaitForEndOfFrame ();			
 							}
 						}
 					}
@@ -1224,7 +1229,8 @@ namespace AC
 
 						if (button.faceAfter)
 						{
-							Vector3 centrePoint = (_hotspot.centrePoint != null) ? _hotspot.centrePoint.position : _hotspot.transform.position;
+							//Vector3 centrePoint = (_hotspot.centrePoint != null) ? _hotspot.centrePoint.position : _hotspot.transform.position;
+							Vector3 centrePoint = _hotspot.GetIconPosition ();
 
 							if (SceneSettings.ActInScreenSpace ())
 							{
@@ -1244,15 +1250,23 @@ namespace AC
 								if (doSnap)
 								{
 									KickStarter.player.SetLookDirection (lookVector, true);
+									break;
 								}
-								yield return new WaitForFixedUpdate ();			
+								yield return new WaitForEndOfFrame ();
 							}
 						}
 					}
 				}
 				else
 				{
-					KickStarter.player.charState = CharState.Decelerate;
+					if (KickStarter.settingsManager.movementMethod == MovementMethod.PointAndClick || KickStarter.settingsManager.movementMethod == MovementMethod.StraightToCursor || KickStarter.settingsManager.movementMethod == MovementMethod.None)
+					{
+						KickStarter.player.StartDecelerating ();
+					}
+					else
+					{
+						KickStarter.player.charState = CharState.Decelerate;
+					}
 				}
 				
 				KickStarter.player.EndPath ();
@@ -1320,6 +1334,10 @@ namespace AC
 							if (_hotspot.gameObject.GetComponent <ConstantID>())
 							{
 								parameter.intValue = _hotspot.gameObject.GetComponent <ConstantID>().constantID;
+							}
+							else
+							{
+								ACDebug.LogWarning ("Cannot set the value of parameter " + button.parameterID + " ('" + parameter.label + "') as " + _hotspot.gameObject.name + " has no Constant ID component.", _hotspot);
 							}
 						}
 					}
@@ -1446,7 +1464,14 @@ namespace AC
 			bool isOverride = (cursorID >= 0);
 			if (cursorID < 0)
 			{
-				cursorID = KickStarter.playerCursor.GetSelectedCursorID ();
+				if (cursorID == -1 && _hotspot != null && _hotspot.IsSingleInteraction () && KickStarter.runtimeInventory.SelectedItem == null && KickStarter.settingsManager.interactionMethod != AC_InteractionMethod.ContextSensitive)
+				{
+					cursorID = _hotspot.GetFirstUseIcon ();
+				}
+				else
+				{
+					cursorID = KickStarter.playerCursor.GetSelectedCursorID ();
+				}
 			}
 
 			string label = string.Empty;
@@ -2191,26 +2216,24 @@ namespace AC
 			}
 			else if (KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot)
 			{
-				//KickStarter.runtimeInventory.SetNull ();
 				KickStarter.playerCursor.SetCursorFromID (iconID);
 			}
 			else if (KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction)
 			{
-				if (KickStarter.settingsManager.SelectInteractionMethod () != SelectInteractions.ClickingMenu)
+				if (KickStarter.settingsManager.SelectInteractionMethod () == SelectInteractions.ClickingMenu ||
+					(KickStarter.settingsManager.SelectInteractionMethod () == SelectInteractions.CyclingMenuAndClickingHotspot && _menu.IsUnityUI () && _menu.ignoreMouseClicks))
 				{
-					return;
-				}
-				if (_menu.GetTargetInvItem () != null)
-				{
-					//_menu.ForceOff ();
-					_menu.TurnOff ();
-					KickStarter.runtimeInventory.RunInteraction (iconID, _menu.GetTargetInvItem ());
-				}
-				else if (_menu.GetTargetHotspot ())
-				{
-					//_menu.ForceOff ();
-					_menu.TurnOff ();
-					ClickButton (InteractionType.Use, iconID, -1, _menu.GetTargetHotspot ());
+					// The second OR lets us use 'Submit' to trigger Interaction elements in Unity UI
+					if (_menu.GetTargetInvItem () != null)
+					{
+						_menu.TurnOff ();
+						KickStarter.runtimeInventory.RunInteraction (iconID, _menu.GetTargetInvItem ());
+					}
+					else if (_menu.GetTargetHotspot ())
+					{
+						_menu.TurnOff ();
+						ClickButton (InteractionType.Use, iconID, -1, _menu.GetTargetHotspot ());
+					}
 				}
 			}
 		}

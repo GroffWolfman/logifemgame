@@ -589,6 +589,11 @@ namespace AC
 		 */
 		public Rect GetAnimatedRect ()
 		{
+			if (frameWidth < 0f)
+			{
+				Reset ();
+			}
+
 			int currentRow = 1;
 			int frameInRow = 1;
 

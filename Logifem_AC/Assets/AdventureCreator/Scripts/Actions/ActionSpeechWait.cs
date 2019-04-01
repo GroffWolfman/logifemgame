@@ -28,6 +28,7 @@ namespace AC
 
 		public bool isPlayer;
 		public Char speaker;
+		private Char runtimeSpeaker;
 
 		
 		public ActionSpeechWait ()
@@ -41,18 +42,18 @@ namespace AC
 		
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			speaker = AssignFile <Char> (parameters, parameterID, constantID, speaker);
+			runtimeSpeaker = AssignFile <Char> (parameters, parameterID, constantID, speaker);
 
 			if (isPlayer)
 			{
-				speaker = KickStarter.player;
+				runtimeSpeaker = KickStarter.player;
 			}
 		}
 
 
 		override public float Run ()
 		{
-			if (speaker == null)
+			if (runtimeSpeaker == null)
 			{
 				ACDebug.LogWarning ("No speaker set.");
 			}
@@ -60,14 +61,14 @@ namespace AC
 			{
 				isRunning = true;
 
-				if (KickStarter.dialog.CharacterIsSpeaking (speaker))
+				if (KickStarter.dialog.CharacterIsSpeaking (runtimeSpeaker))
 				{
 					return defaultPauseTime;
 				}
 			}
 			else
 			{
-				if (KickStarter.dialog.CharacterIsSpeaking (speaker))
+				if (KickStarter.dialog.CharacterIsSpeaking (runtimeSpeaker))
 				{
 					return defaultPauseTime;
 				}

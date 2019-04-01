@@ -102,7 +102,10 @@ namespace AC
 
 			foreach (Menu menu in menus)
 			{
-				if (menu.menuSource == MenuSource.UnityUiPrefab && menu.canvas != null && menu.canvas.gameObject != null)
+				if (menu.menuSource == MenuSource.UnityUiPrefab &&
+					menu.canvas != null &&
+					menu.canvas.gameObject != null &&
+					!menu.GetsDuplicated ())
 				{
 					Destroy (menu.canvas.gameObject);
 				}
@@ -1324,7 +1327,7 @@ namespace AC
 			
 			else if (menu.appearType == AppearType.OnInteraction)
 			{
-				if (KickStarter.player != null && KickStarter.player.hotspotDetector != null && KickStarter.settingsManager.closeInteractionMenusIfPlayerLeavesVicinity)
+				if (KickStarter.player != null && KickStarter.settingsManager.hotspotDetection != HotspotDetection.MouseOver && KickStarter.player.hotspotDetector != null && KickStarter.settingsManager.closeInteractionMenusIfPlayerLeavesVicinity)
 				{
 					if (menu.GetTargetHotspot () != null && !KickStarter.player.hotspotDetector.IsHotspotInTrigger (menu.GetTargetHotspot ()))
 					{
@@ -2188,17 +2191,19 @@ namespace AC
 		public void SelectInputBox (MenuInput input)
 		{
 			selectedInputBox = input;
-			
+
 			// Mobile keyboard
 			#if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
-			if (input.inputType == AC_InputType.NumbericOnly)
-			{
-				keyboard = TouchScreenKeyboard.Open (input.label, TouchScreenKeyboardType.NumberPad, false, false, false, false, "");
-			}
-			else
-			{
-				keyboard = TouchScreenKeyboard.Open (input.label, TouchScreenKeyboardType.ASCIICapable, false, false, false, false, "");
-			}
+			TouchScreenKeyboardType keyboardType = (input.inputType == AC_InputType.NumbericOnly)
+													? TouchScreenKeyboardType.NumberPad
+													: TouchScreenKeyboardType.ASCIICapable;
+			
+			#if UNITY_2018_3_OR_NEWER
+			keyboard.characterLimit = input.characterLimit;
+			#endif
+
+			keyboard = TouchScreenKeyboard.Open (input.label, keyboardType, false, false, false, false, string.Empty);
+
 			#endif
 		}
 

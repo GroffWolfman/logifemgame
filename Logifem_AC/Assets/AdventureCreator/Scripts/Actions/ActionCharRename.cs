@@ -26,6 +26,7 @@ namespace AC
 		public int _charID = 0;
 		public Char _char;
 		public bool isPlayer;
+		private Char runtimeChar;
 
 		public string newName;
 		public int lineID = -1;
@@ -43,20 +44,20 @@ namespace AC
 		
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			_char = AssignFile <Char> (_charID, _char);
+			runtimeChar = AssignFile <Char> (_charID, _char);
 
 			if (isPlayer)
 			{
-				_char = KickStarter.player;
+				runtimeChar = KickStarter.player;
 			}
 		}
 		
 		
 		override public float Run ()
 		{
-			if (_char && !string.IsNullOrEmpty (newName))
+			if (runtimeChar && !string.IsNullOrEmpty (newName))
 			{
-				_char.SetName (newName, lineID);
+				runtimeChar.SetName (newName, lineID);
 			}
 			
 			return 0f;

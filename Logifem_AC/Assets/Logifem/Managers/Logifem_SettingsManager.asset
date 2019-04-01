@@ -27,7 +27,7 @@ MonoBehaviour:
   playerSwitching: 1
   player: {fileID: 0}
   players: []
-  movementMethod: 2
+  movementMethod: 0
   inputMethod: 0
   interactionMethod: 0
   selectInteractions: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   lockCursorOnStart: 0
   hideLockedCursor: 0
   disableFreeAimWhenDragging: 0
-  runConversationsWithKeys: 0
+  runConversationsWithKeys: 1
   clickUpInteractions: 0
   defaultMouseClicks: 1
   allowGameplayDuringConversations: 0

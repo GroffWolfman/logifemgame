@@ -29,6 +29,7 @@ namespace AC
 		public int constantID = 0;
 		public int parameterID = -1;
 		public GameObject linkedObject;
+		private GameObject runtimeLinkedObject;
 
 		public string fsmName;
 		public int fsmNameParameterID = -1;
@@ -51,7 +52,7 @@ namespace AC
 			{
 				if (KickStarter.player != null)
 				{
-					linkedObject = KickStarter.player.gameObject;
+					runtimeLinkedObject = KickStarter.player.gameObject;
 				}
 				else
 				{
@@ -60,7 +61,7 @@ namespace AC
 			}
 			else
 			{
-				linkedObject = AssignFile (parameters, parameterID, constantID, linkedObject);
+				runtimeLinkedObject = AssignFile (parameters, parameterID, constantID, linkedObject);
 			}
 
 			fsmName = AssignString (parameters, fsmNameParameterID, fsmName);
@@ -70,15 +71,15 @@ namespace AC
 
 		override public float Run ()
 		{
-			if (linkedObject != null && eventName != "")
+			if (runtimeLinkedObject != null && !string.IsNullOrEmpty (eventName))
 			{
 				if (fsmName != "")
 				{
-					PlayMakerIntegration.CallEvent (linkedObject, eventName, fsmName);
+					PlayMakerIntegration.CallEvent (runtimeLinkedObject, eventName, fsmName);
 				}
 				else
 				{
-					PlayMakerIntegration.CallEvent (linkedObject, eventName);
+					PlayMakerIntegration.CallEvent (runtimeLinkedObject, eventName);
 				}
 			}
 

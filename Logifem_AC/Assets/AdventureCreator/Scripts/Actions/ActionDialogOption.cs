@@ -28,6 +28,7 @@ namespace AC
 
 		public int constantID;
 		public Conversation linkedConversation;
+		private Conversation runtimeLinkedConversation;
 		
 		
 		public ActionDialogOption ()
@@ -41,28 +42,27 @@ namespace AC
 
 		override public void AssignValues ()
 		{
-			linkedConversation = AssignFile <Conversation> (constantID, linkedConversation);
+			runtimeLinkedConversation = AssignFile <Conversation> (constantID, linkedConversation);
 		}
 
 		
 		override public float Run ()
 		{
-			bool setOption = false;
-			bool clampOption = false;
-			
-			if (switchType == SwitchType.On || switchType == SwitchType.OnForever)
+			if (runtimeLinkedConversation)
 			{
-				setOption = true;
-			}
-			
-			if (switchType == SwitchType.OffForever || switchType == SwitchType.OnForever)
-			{
-				clampOption = true;
-			}
-			
-			if (linkedConversation)
-			{
-				linkedConversation.SetOptionState (optionNumber+1, setOption, clampOption);
+				bool setOption = false;
+				if (switchType == SwitchType.On || switchType == SwitchType.OnForever)
+				{
+					setOption = true;
+				}
+				
+				bool clampOption = false;
+				if (switchType == SwitchType.OffForever || switchType == SwitchType.OnForever)
+				{
+					clampOption = true;
+				}
+
+				runtimeLinkedConversation.SetOptionState (optionNumber+1, setOption, clampOption);
 			}
 			
 			return 0f;

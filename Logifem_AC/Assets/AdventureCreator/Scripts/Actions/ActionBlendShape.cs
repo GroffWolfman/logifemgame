@@ -36,7 +36,9 @@ namespace AC
 		public float fadeTime = 0f;
 		public MoveMethod moveMethod = MoveMethod.Smooth;
 		public AnimationCurve timeCurve = new AnimationCurve (new Keyframe(0, 0), new Keyframe(1, 1));
-				
+
+		private Shapeable runtimeShapeObject;
+
 
 		public ActionBlendShape ()
 		{
@@ -49,17 +51,17 @@ namespace AC
 		
 		public override void AssignValues (List<ActionParameter> parameters)
 		{
-			shapeObject = AssignFile <Shapeable> (parameters, parameterID, constantID, shapeObject);
+			runtimeShapeObject = AssignFile <Shapeable> (parameters, parameterID, constantID, shapeObject);
 			
 			if (isPlayer)
 			{
 				if (KickStarter.player && KickStarter.player.GetShapeable ())
 				{
-					shapeObject = KickStarter.player.GetShapeable ();
+					runtimeShapeObject = KickStarter.player.GetShapeable ();
 				}
 				else
 				{
-					shapeObject = null;
+					runtimeShapeObject = null;
 					ACDebug.LogWarning ("Cannot BlendShape Player since cannot find Shapeable script on Player.");
 				}
 			}
@@ -72,7 +74,7 @@ namespace AC
 			{
 				isRunning = true;
 			   
-				if (shapeObject)
+				if (runtimeShapeObject != null)
 				{
 					DoShape (fadeTime);
 					
@@ -99,15 +101,15 @@ namespace AC
 
 		private void DoShape (float _time)
 		{
-			if (shapeObject)
+			if (runtimeShapeObject != null)
 			{
 				if (disableAllKeys)
 				{
-					shapeObject.DisableAllKeys (shapeGroupID, _time, moveMethod, timeCurve);
+					runtimeShapeObject.DisableAllKeys (shapeGroupID, _time, moveMethod, timeCurve);
 				}
 				else
 				{
-					shapeObject.SetActiveKey (shapeGroupID, shapeKeyID, shapeValue, _time, moveMethod, timeCurve);
+					runtimeShapeObject.SetActiveKey (shapeGroupID, shapeKeyID, shapeValue, _time, moveMethod, timeCurve);
 				}
 			}
 		}
@@ -223,11 +225,11 @@ namespace AC
 				{
 					if (shapeGroup.label != "")
 					{
-						labelList.Add (shapeGroup.label);
+						labelList.Add (shapeGroup.ID + ": " + shapeGroup.label);
 					}
 					else
 					{
-						labelList.Add ("(Untitled)");
+						labelList.Add (shapeGroup.ID + ": (Untitled)");
 					}
 					if (shapeGroup.ID == groupID)
 					{

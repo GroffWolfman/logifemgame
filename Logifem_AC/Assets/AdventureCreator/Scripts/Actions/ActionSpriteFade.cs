@@ -25,6 +25,7 @@ namespace AC
 		public int constantID = 0;
 		public int parameterID = -1;
 		public SpriteFader spriteFader;
+		private SpriteFader runtimeSpriteFader;
 		
 		public FadeType fadeType = FadeType.fadeIn;
 		public float fadeSpeed;
@@ -41,13 +42,13 @@ namespace AC
 		
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			spriteFader = AssignFile <SpriteFader> (parameters, parameterID, constantID, spriteFader);
+			runtimeSpriteFader = AssignFile <SpriteFader> (parameters, parameterID, constantID, spriteFader);
 		}
 		
 		
 		override public float Run ()
 		{
-			if (spriteFader == null)
+			if (runtimeSpriteFader == null)
 			{
 				return 0f;
 			}
@@ -56,7 +57,7 @@ namespace AC
 			{
 				isRunning = true;
 
-				spriteFader.Fade (fadeType, fadeSpeed);
+				runtimeSpriteFader.Fade (fadeType, fadeSpeed);
 
 				if (willWait)
 				{
@@ -74,9 +75,9 @@ namespace AC
 
 		override public void Skip ()
 		{
-			if (spriteFader != null)
+			if (runtimeSpriteFader != null)
 			{
-				spriteFader.Fade (fadeType, 0f);
+				runtimeSpriteFader.Fade (fadeType, 0f);
 			}
 		}
 	

@@ -739,10 +739,21 @@ namespace AC
 
 							if (forLipSync)
 							{
-								TextAsset textFile = Resources.Load (fullName) as TextAsset;
-								if (textFile != null)
+								if (KickStarter.speechManager.lipSyncMode == LipSyncMode.RogoLipSync)
 								{
-									foundClp = textFile;
+									Object lipSyncFile = RogoLipSyncIntegration.GetObjectToPing (fullName);
+									if (lipSyncFile != null)
+									{
+										foundClp = lipSyncFile;
+									}
+								}
+								else
+								{
+									TextAsset textFile = Resources.Load (fullName) as TextAsset;
+									if (textFile != null)
+									{
+										foundClp = textFile;
+									}
 								}
 							}
 							else
@@ -763,8 +774,15 @@ namespace AC
 
 					if (forLipSync)
 					{
-						TextAsset textFile = Resources.Load (fullName) as TextAsset;
-						foundClp = textFile;
+						if (KickStarter.speechManager.lipSyncMode == LipSyncMode.RogoLipSync)
+						{
+							foundClp = RogoLipSyncIntegration.GetObjectToPing (fullName);
+						}
+						else
+						{
+							TextAsset textFile = Resources.Load (fullName) as TextAsset;
+							foundClp = textFile;
+						}
 					}
 					else
 					{

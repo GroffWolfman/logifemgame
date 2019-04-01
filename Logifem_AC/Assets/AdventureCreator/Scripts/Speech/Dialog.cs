@@ -763,7 +763,7 @@ namespace AC
 			}
 
 			// Call event
-			KickStarter.eventManager.Call_OnStopSpeech (oldSpeech.GetSpeakingCharacter ());
+			KickStarter.eventManager.Call_OnStopSpeech (oldSpeech, oldSpeech.GetSpeakingCharacter ());
 		}
 
 

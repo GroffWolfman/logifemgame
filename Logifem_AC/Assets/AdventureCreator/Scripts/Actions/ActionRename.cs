@@ -26,6 +26,7 @@ namespace AC
 		public int constantID = 0;
 		public int parameterID = -1;
 		public Hotspot hotspot;
+		private Hotspot runtimeHotspot;
 
 		public string newName;
 		public int lineID = -1;
@@ -43,15 +44,15 @@ namespace AC
 		
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
-			hotspot = AssignFile <Hotspot> (parameters, parameterID, constantID, hotspot);
+			runtimeHotspot = AssignFile <Hotspot> (parameters, parameterID, constantID, hotspot);
 		}
 		
 		
 		override public float Run ()
 		{
-			if (hotspot && newName != "")
+			if (runtimeHotspot && !string.IsNullOrEmpty (newName))
 			{
-				hotspot.SetName (newName, lineID);
+				runtimeHotspot.SetName (newName, lineID);
 			}
 			
 			return 0f;
