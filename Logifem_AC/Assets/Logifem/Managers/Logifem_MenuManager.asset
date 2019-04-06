@@ -76,10 +76,10 @@ MonoBehaviour:
   linkedUiID: 329416
   relativeRect:
     serializedVersion: 2
-    x: 2.375
-    y: 33.825
-    width: 76
-    height: 13.35
+    x: 3.01
+    y: 42.93
+    width: 96.32
+    height: 16.95
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -200,9 +200,9 @@ MonoBehaviour:
   isLocked: 0
   id: 12
   title: Pause
-  manualSize: {x: 17, y: 30.337078}
+  manualSize: {x: 17, y: 30.327435}
   positionType: 0
-  manualPosition: {x: 237.5, y: 133.5}
+  manualPosition: {x: 301, y: 169.5}
   positionSmoothing: 0
   alignment: 4
   toggleKey: Menu
@@ -280,13 +280,13 @@ MonoBehaviour:
   speechProximityLimit: 0
   speechProximityDistance: 10
   deleteUIWhenTurnOff: 0
-  biggestElementSize: {x: 78.375, y: 78.625}
+  biggestElementSize: {x: 99.33, y: 99.8}
   rect:
     serializedVersion: 2
-    x: 197.125
-    y: 93
-    width: 80.75
-    height: 81
+    x: 249.83
+    y: 118.095
+    width: 102.340004
+    height: 102.810005
   showInFilter: 1
 --- !u!114 &114078297665459168
 MonoBehaviour:
@@ -2713,10 +2713,10 @@ MonoBehaviour:
   linkedUiID: 326570
   relativeRect:
     serializedVersion: 2
-    x: 2.375
-    y: 18.1
-    width: 76
-    height: 13.35
+    x: 3.01
+    y: 22.970001
+    width: 96.32
+    height: 16.95
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -2923,10 +2923,10 @@ MonoBehaviour:
   linkedUiID: 332646
   relativeRect:
     serializedVersion: 2
-    x: 2.375
-    y: 49.550003
-    width: 76
-    height: 13.35
+    x: 3.01
+    y: 62.89
+    width: 96.32
+    height: 16.95
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -3905,10 +3905,10 @@ MonoBehaviour:
   linkedUiID: 335904
   relativeRect:
     serializedVersion: 2
-    x: 2.375
-    y: 65.275
-    width: 76
-    height: 13.35
+    x: 3.01
+    y: 82.850006
+    width: 96.32
+    height: 16.95
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -4707,8 +4707,8 @@ MonoBehaviour:
     serializedVersion: 2
     x: 4.845
     y: 133.225
-    width: 76
-    height: 13.35
+    width: 96.32
+    height: 16.95
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -5300,10 +5300,10 @@ MonoBehaviour:
   linkedUiID: 318248
   relativeRect:
     serializedVersion: 2
-    x: 2.375
-    y: 2.375
-    width: 76
-    height: 13.35
+    x: 3.01
+    y: 3.01
+    width: 96.32
+    height: 16.95
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}

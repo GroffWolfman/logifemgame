@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Logifem_VariablesManager
   m_EditorClassIdentifier: 
   vars:
-  - label: Variable 1
+  - label: Level Complete - Winter
     id: 0
-    type: 0
+    type: 1
     val: 0
     floatVal: 0
     textVal: 
@@ -28,7 +28,81 @@ MonoBehaviour:
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
-    description: 
+    description: Complete all objectives in Winter
     showInFilter: 1
-  varPresets: []
+  - label: Level Complete - Spring
+    id: 1
+    type: 1
+    val: 0
+    floatVal: 0
+    textVal: 
+    popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
+    link: 0
+    pmVar: 
+    updateLinkOnStart: 0
+    isEditing: 0
+    canTranslate: 1
+    textValLineID: -1
+    popUpsLineID: -1
+    description: Complete all objectives in Spring
+    showInFilter: 1
+  - label: Level Complete - Summer
+    id: 2
+    type: 1
+    val: 0
+    floatVal: 0
+    textVal: 
+    popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
+    link: 0
+    pmVar: 
+    updateLinkOnStart: 0
+    isEditing: 0
+    canTranslate: 1
+    textValLineID: -1
+    popUpsLineID: -1
+    description: Complete all objectives in Summer
+    showInFilter: 1
+  - label: Level Complete - Fall
+    id: 3
+    type: 1
+    val: 0
+    floatVal: 0
+    textVal: 
+    popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
+    link: 0
+    pmVar: 
+    updateLinkOnStart: 0
+    isEditing: 0
+    canTranslate: 1
+    textValLineID: -1
+    popUpsLineID: -1
+    description: Complete all objectives in Fall
+    showInFilter: 1
+  varPresets:
+  - label: Add to move
+    ID: 0
+    presetValues:
+    - id: 0
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 1
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 2
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 3
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
   updateRuntime: 1
