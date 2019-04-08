@@ -23,8 +23,8 @@ MonoBehaviour:
   playAnimationForever: 1
   canSkipWithMouseClicks: 1
   minimumDisplayTime: 1
-  screenTimeFactor: 0.06
-  allowSpeechSkipping: 0
+  screenTimeFactor: 0.05
+  allowSpeechSkipping: 1
   allowGameplaySpeechSkipping: 0
   skipThresholdTime: 0
   endScrollBeforeSkip: 0

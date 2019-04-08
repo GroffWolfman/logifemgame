@@ -3730,7 +3730,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
-  fitWithinScreen: 1
+  fitWithinScreen: 0
   backgroundTexture: {fileID: 0}
   visibleElements:
   - {fileID: 114633271342182828}
@@ -3779,7 +3779,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   panDistance: 0.5
-  fadeSpeed: 0.2
+  fadeSpeed: 0.21
   zoomAnchor: 4
   zoomElements: 0
   oneMenuPerSpeech: 1
